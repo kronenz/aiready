@@ -23,7 +23,13 @@ export function AgentTab() {
     setTimeout(() => {
       setMessages(prev => [...prev, {
         role: 'ai',
-        content: '📡 MCP 서버를 통해 분석 중입니다...\n\n🔍 Ontology MCP → 관련 컴포넌트 탐색\n🔥 Prometheus MCP → 메트릭 수집\n📝 OpenSearch MCP → 로그 분석\n\n분석이 완료되면 결과를 알려드리겠습니다.',
+        content: `📡 MCP 서버를 통해 분석 중입니다...
+
+🔍 Ontology MCP → 관련 컴포넌트 탐색
+🔥 Prometheus MCP → 메트릭 수집
+📝 OpenSearch MCP → 로그 분석
+
+분석이 완료되면 결과를 알려드리겠습니다.`,
       }]);
       setIsTyping(false);
     }, 2000);
@@ -31,10 +37,10 @@ export function AgentTab() {
 
   return (
     <div className="flex h-full">
-      {/* Left Sidebar */}
+      {/* Sidebar */}
       <div className="w-52 border-r flex flex-col shrink-0"
         style={{ background: '#0c1018', borderColor: '#1e293b' }}>
-        {/* Agent List */}
+        {/* Agents */}
         <div className="p-3 border-b" style={{ borderColor: '#1e293b' }}>
           <div className="text-xs font-medium mb-2" style={{ color: '#64748b' }}>에이전트</div>
           <div className="space-y-1">
@@ -58,7 +64,7 @@ export function AgentTab() {
           </div>
         </div>
 
-        {/* MCP Servers */}
+        {/* MCP */}
         <div className="p-3 border-b" style={{ borderColor: '#1e293b' }}>
           <div className="text-xs font-medium mb-2" style={{ color: '#64748b' }}>MCP 서버</div>
           <div className="space-y-1">
@@ -73,7 +79,7 @@ export function AgentTab() {
           </div>
         </div>
 
-        {/* LLM Runtime */}
+        {/* LLM */}
         <div className="p-3">
           <div className="text-xs font-medium mb-2" style={{ color: '#64748b' }}>LLM 런타임</div>
           <div className="flex items-center gap-2 px-1">
@@ -84,9 +90,8 @@ export function AgentTab() {
         </div>
       </div>
 
-      {/* Chat Area */}
+      {/* Chat */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
         <div className="h-10 flex items-center px-4 border-b shrink-0"
           style={{ borderColor: '#1e293b' }}>
           <span className="text-sm mr-2">🚨</span>
@@ -94,7 +99,6 @@ export function AgentTab() {
           <span className="ml-2 w-2 h-2 rounded-full" style={{ background: '#4ade80' }} />
         </div>
 
-        {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -122,7 +126,6 @@ export function AgentTab() {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Input */}
         <div className="p-3 border-t" style={{ borderColor: '#1e293b' }}>
           <div className="flex gap-2">
             <input

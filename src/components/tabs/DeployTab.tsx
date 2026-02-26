@@ -28,8 +28,8 @@ export function DeployTab() {
       {/* Deploy Logs */}
       <div>
         <h3 className="text-xs font-medium mb-3" style={{ color: '#94a3b8' }}>배포 로그</h3>
-        <div className="rounded-lg border p-4 font-mono text-xs space-y-1.5"
-          style={{ background: '#0a0e17', borderColor: '#1e293b' }}>
+        <div className="rounded-lg border p-4 text-xs space-y-1.5"
+          style={{ fontFamily: "'JetBrains Mono', monospace", background: '#0a0e17', borderColor: '#1e293b' }}>
           {deployLogs.map((log, i) => {
             const statusIcon = log.status === 'done' ? '✓' : log.status === 'active' ? '◉' : '○';
             const color = log.status === 'done' ? '#4ade80' : log.status === 'active' ? '#3b82f6' : '#475569';
@@ -46,7 +46,7 @@ export function DeployTab() {
         </div>
       </div>
 
-      {/* ArgoCD Application Status */}
+      {/* ArgoCD Status */}
       <div>
         <h3 className="text-xs font-medium mb-3" style={{ color: '#94a3b8' }}>ArgoCD Application 상태</h3>
         <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))' }}>
@@ -55,19 +55,14 @@ export function DeployTab() {
             return (
               <div key={app.name}
                 className="rounded-lg p-2.5 border flex items-center gap-2"
-                style={{
-                  background: '#0f172a',
-                  borderColor: isSynced ? '#4ade8040' : '#3b82f640',
-                }}>
+                style={{ background: '#0f172a', borderColor: isSynced ? '#4ade8040' : '#3b82f640' }}>
                 <span className="text-sm">{app.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="text-xs font-medium truncate" style={{ color: '#e2e8f0' }}>{app.name}</div>
                 </div>
-                <span className="text-xs font-mono shrink-0"
-                  style={{ color: isSynced ? '#4ade80' : '#3b82f6' }}>
-                  {isSynced ? 'Synced' : (
-                    <span className="animate-pulse">Syncing</span>
-                  )}
+                <span className="text-xs shrink-0"
+                  style={{ fontFamily: "'JetBrains Mono', monospace", color: isSynced ? '#4ade80' : '#3b82f6' }}>
+                  {isSynced ? 'Synced' : <span className="animate-pulse">Syncing</span>}
                 </span>
               </div>
             );

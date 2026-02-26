@@ -15,13 +15,9 @@ export function VersionTab() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold" style={{ color: '#e2e8f0' }}>{v.name}</span>
-                  <span className="font-mono text-xs" style={{ color: '#64748b' }}>
-                    {v.currentVersion}
-                  </span>
+                  <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#64748b' }}>{v.currentVersion}</span>
                   <ArrowRight size={12} style={{ color: '#64748b' }} />
-                  <span className="font-mono text-xs" style={{ color: '#e2e8f0' }}>
-                    {v.latestVersion}
-                  </span>
+                  <span className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#e2e8f0' }}>{v.latestVersion}</span>
                   <span className="px-1.5 py-0.5 rounded text-xs font-medium"
                     style={{
                       background: v.compatible ? '#4ade8020' : '#ef444420',
@@ -31,14 +27,12 @@ export function VersionTab() {
                   </span>
                   {v.patchOnly && (
                     <span className="px-1.5 py-0.5 rounded text-xs font-medium"
-                      style={{ background: '#eab30820', color: '#eab308' }}>
-                      PATCH
-                    </span>
+                      style={{ background: '#eab30820', color: '#eab308' }}>PATCH</span>
                   )}
                 </div>
                 <div className="text-xs mt-1" style={{ color: '#64748b' }}>{v.note}</div>
               </div>
-              <div className="text-xs font-mono" style={{ color: '#475569' }}>{v.date}</div>
+              <div className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#475569' }}>{v.date}</div>
               <button
                 className="px-3 py-1.5 rounded text-xs font-medium transition-colors border"
                 style={{
@@ -48,8 +42,7 @@ export function VersionTab() {
                   cursor: v.compatible ? 'pointer' : 'not-allowed',
                   opacity: v.compatible ? 1 : 0.5,
                 }}
-                disabled={!v.compatible}
-              >
+                disabled={!v.compatible}>
                 ↑ 업그레이드 계획
               </button>
             </div>
@@ -68,8 +61,8 @@ export function VersionTab() {
                   <th className="p-2 text-left text-xs font-medium border-b"
                     style={{ color: '#64748b', borderColor: '#1e293b' }}></th>
                   {compatibilityMatrix.headers.cols.map(col => (
-                    <th key={col} className="p-2 text-center text-xs font-mono font-medium border-b"
-                      style={{ color: '#94a3b8', borderColor: '#1e293b' }}>
+                    <th key={col} className="p-2 text-center text-xs font-medium border-b"
+                      style={{ fontFamily: "'JetBrains Mono', monospace", color: '#94a3b8', borderColor: '#1e293b' }}>
                       {col}
                     </th>
                   ))}
@@ -78,8 +71,8 @@ export function VersionTab() {
               <tbody>
                 {compatibilityMatrix.headers.rows.map((row, ri) => (
                   <tr key={row} style={{ background: ri % 2 === 0 ? '#0f172a' : '#0c1018' }}>
-                    <td className="p-2 text-xs font-mono font-medium border-b"
-                      style={{ color: '#94a3b8', borderColor: '#1e293b' }}>
+                    <td className="p-2 text-xs font-medium border-b"
+                      style={{ fontFamily: "'JetBrains Mono', monospace", color: '#94a3b8', borderColor: '#1e293b' }}>
                       {row}
                     </td>
                     {compatibilityMatrix.data[ri].map((cell, ci) => {
@@ -116,7 +109,7 @@ export function VersionTab() {
                   </span>
                   <span className="text-xs font-medium" style={{ color: '#e2e8f0' }}>{step.title}</span>
                 </div>
-                <div className="text-xs font-mono" style={{ color: '#64748b' }}>{step.detail}</div>
+                <div className="text-xs" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#64748b' }}>{step.detail}</div>
               </div>
               {i < upgradeSteps.length - 1 && (
                 <ArrowRight size={16} style={{ color: '#475569' }} className="shrink-0" />

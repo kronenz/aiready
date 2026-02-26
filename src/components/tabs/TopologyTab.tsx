@@ -76,10 +76,7 @@ export function TopologyTab({ onNodeSelect }: TopologyTabProps) {
     const delay = isDataRelated ? 2500 : 1500;
 
     setTimeout(() => {
-      setMessages(prev => [...prev, {
-        role: 'ai',
-        content: isDataRelated ? DATA_RESPONSE : DEFAULT_RESPONSE,
-      }]);
+      setMessages(prev => [...prev, { role: 'ai', content: isDataRelated ? DATA_RESPONSE : DEFAULT_RESPONSE }]);
       setIsTyping(false);
     }, delay);
   }, [input, isTyping]);
@@ -113,7 +110,7 @@ export function TopologyTab({ onNodeSelect }: TopologyTabProps) {
                   '마이크로서비스 기본 인프라 구성',
                 ].map(example => (
                   <button key={example} onClick={() => setInput(example)}
-                    className="w-full text-left px-3 py-2 rounded text-xs transition-colors"
+                    className="w-full text-left px-3 py-2 rounded text-xs transition-colors hover:border-[#334155]"
                     style={{ background: '#0f172a', border: '1px solid #1e293b', color: '#94a3b8' }}>
                     "{example}"
                   </button>
@@ -148,7 +145,6 @@ export function TopologyTab({ onNodeSelect }: TopologyTabProps) {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Input */}
         <div className="p-3 border-t" style={{ borderColor: '#1e293b' }}>
           <div className="flex gap-2">
             <input
@@ -157,11 +153,7 @@ export function TopologyTab({ onNodeSelect }: TopologyTabProps) {
               onKeyDown={e => e.key === 'Enter' && handleSend()}
               placeholder="요구사항을 입력하세요..."
               className="flex-1 px-3 py-2 rounded text-xs outline-none"
-              style={{
-                background: '#0f172a',
-                border: '1px solid #1e293b',
-                color: '#e2e8f0',
-              }}
+              style={{ background: '#0f172a', border: '1px solid #1e293b', color: '#e2e8f0' }}
             />
             <button onClick={handleSend}
               className="p-2 rounded transition-colors"
@@ -191,14 +183,14 @@ export function TopologyTab({ onNodeSelect }: TopologyTabProps) {
           <Controls />
           <MiniMap
             nodeColor={(node) => {
-              const data = node.data as { color?: string };
-              return data?.color || '#334155';
+              const d = node.data as { color?: string };
+              return d?.color || '#334155';
             }}
             maskColor="rgba(6, 9, 15, 0.8)"
           />
         </ReactFlow>
 
-        {/* View toggle buttons */}
+        {/* View toggles */}
         <div className="absolute top-3 right-3 flex gap-1 z-10">
           {['계층 뷰', '데이터 플로우', '의존성'].map((label, i) => (
             <button key={label}
@@ -214,7 +206,7 @@ export function TopologyTab({ onNodeSelect }: TopologyTabProps) {
         </div>
 
         {/* Provision button */}
-        <button className="absolute bottom-6 right-6 px-4 py-2.5 rounded-lg text-xs font-semibold z-10 transition-all"
+        <button className="absolute bottom-6 right-6 px-4 py-2.5 rounded-lg text-xs font-semibold z-10 transition-all hover:scale-[1.02]"
           style={{
             background: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
             color: 'white',

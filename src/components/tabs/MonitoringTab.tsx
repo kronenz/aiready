@@ -27,10 +27,10 @@ export function MonitoringTab({ onComponentSelect }: MonitoringTabProps) {
               <span className="text-xs" style={{ color: '#64748b' }}>{card.label}</span>
               <span className="text-lg">{card.icon}</span>
             </div>
-            <div className="text-2xl font-bold font-mono" style={{ color: card.color }}>
+            <div className="text-2xl font-bold" style={{ fontFamily: "'JetBrains Mono', monospace", color: card.color }}>
               {card.value}
             </div>
-            <div className="text-xs mt-1 font-mono" style={{ color: '#64748b' }}>
+            <div className="text-xs mt-1" style={{ fontFamily: "'JetBrains Mono', monospace", color: '#64748b' }}>
               {card.sub}
             </div>
           </div>
@@ -45,9 +45,7 @@ export function MonitoringTab({ onComponentSelect }: MonitoringTabProps) {
 
       {/* Health Grid */}
       <div>
-        <h3 className="text-xs font-medium mb-3" style={{ color: '#94a3b8' }}>
-          컴포넌트 Health
-        </h3>
+        <h3 className="text-xs font-medium mb-3" style={{ color: '#94a3b8' }}>컴포넌트 Health</h3>
         <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
           {components.map(comp => (
             <button key={comp.id}
@@ -57,20 +55,20 @@ export function MonitoringTab({ onComponentSelect }: MonitoringTabProps) {
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm">{comp.icon}</span>
                 <span className="text-xs font-semibold" style={{ color: '#e2e8f0' }}>{comp.name}</span>
-                <span className="font-mono" style={{ fontSize: '9px', color: comp.color }}>{comp.version}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', color: comp.color }}>{comp.version}</span>
                 <span className="ml-auto w-2 h-2 rounded-full"
                   style={{ background: comp.status === 'ok' ? '#4ade80' : '#eab308' }} />
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs w-8" style={{ color: '#64748b', fontSize: '9px' }}>CPU</span>
+                  <span style={{ fontSize: '9px', color: '#64748b', width: 24 }}>CPU</span>
                   <div className="flex-1"><ProgressBar value={comp.cpu} height={4} /></div>
-                  <span className="font-mono w-8 text-right" style={{ fontSize: '9px', color: '#94a3b8' }}>{comp.cpu}%</span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', color: '#94a3b8', width: 28, textAlign: 'right' as const }}>{comp.cpu}%</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs w-8" style={{ color: '#64748b', fontSize: '9px' }}>MEM</span>
+                  <span style={{ fontSize: '9px', color: '#64748b', width: 24 }}>MEM</span>
                   <div className="flex-1"><ProgressBar value={comp.mem} height={4} /></div>
-                  <span className="font-mono w-8 text-right" style={{ fontSize: '9px', color: '#94a3b8' }}>{comp.mem}%</span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', color: '#94a3b8', width: 28, textAlign: 'right' as const }}>{comp.mem}%</span>
                 </div>
               </div>
             </button>
@@ -89,7 +87,7 @@ function ChartCard({ title, data, color }: { title: string; data: { time: string
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
           <XAxis dataKey="time" tick={{ fontSize: 9, fill: '#64748b' }} tickLine={false} axisLine={false} />
-          <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: '#64748b' }} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} />
+          <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: '#64748b' }} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${v}%`} />
           <Tooltip
             contentStyle={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: 8, fontSize: 11 }}
             labelStyle={{ color: '#94a3b8' }}

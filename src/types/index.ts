@@ -24,6 +24,7 @@ export interface KubeComponent {
 export interface ChatMessage {
   role: 'user' | 'ai';
   content: string;
+  timestamp?: string;
 }
 
 export interface Alert {

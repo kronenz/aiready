@@ -1,4 +1,4 @@
-import type { AgentInfo, McpServer } from '../types';
+import type { AgentInfo, McpServer, ChatMessage } from '../types';
 
 export const agents: AgentInfo[] = [
   { id: 'incident', name: 'Incident Response', icon: '🚨', status: 'active', description: '장애 대응 · 근본원인 분석' },
@@ -17,9 +17,9 @@ export const mcpServers: McpServer[] = [
   { id: 'mcp-version', name: 'Version', icon: '📦', connected: true },
 ];
 
-export const agentChatMessages = [
-  { role: 'user' as const, content: '현재 Fluent Bit 알럿 원인 분석해줘' },
-  { role: 'ai' as const, content: `📡 분석 시작...
+export const agentChatMessages: ChatMessage[] = [
+  { role: 'user', content: '현재 Fluent Bit 알럿 원인 분석해줘' },
+  { role: 'ai', content: `📡 분석 시작...
 
 🔍 Ontology MCP → find_impact_chain("fluentbit")
 🔥 Prometheus MCP → query("container_memory_working_set_bytes{pod=~'fluent.*'}")
@@ -43,8 +43,8 @@ export const agentChatMessages = [
    • 예방: Fluent Bit backpressure 알럿 임계값 70%로 하향
 
 자동 PR을 생성할까요?` },
-  { role: 'user' as const, content: 'Spark executor 메모리 조정 PR 만들어줘' },
-  { role: 'ai' as const, content: `✅ PR 생성 완료!
+  { role: 'user', content: 'Spark executor 메모리 조정 PR 만들어줘' },
+  { role: 'ai', content: `✅ PR 생성 완료!
 
 📁 PR #347: fix/spark-executor-oom-4521
 

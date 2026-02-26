@@ -20,14 +20,15 @@ export function TopBar({ activeTab, onTabChange, onAlertClick }: TopBarProps) {
   const firingCount = alerts.filter(a => a.status === 'firing').length;
 
   return (
-    <div className="h-12 flex items-center justify-between px-4 border-b"
+    <div className="h-12 flex items-center justify-between px-4 border-b shrink-0"
       style={{ background: '#0c1018', borderColor: '#1e293b' }}>
-      {/* Left: Logo + Tabs */}
       <div className="flex items-center gap-1">
-        <div className="flex items-center gap-2 mr-6">
+        {/* Logo */}
+        <div className="flex items-center gap-2 mr-6 cursor-default">
           <span className="text-lg">🧬</span>
-          <span className="font-bold text-sm font-mono"
+          <span className="font-bold text-sm"
             style={{
+              fontFamily: "'JetBrains Mono', monospace",
               background: 'linear-gradient(135deg, #a78bfa, #3b82f6)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -35,6 +36,7 @@ export function TopBar({ activeTab, onTabChange, onAlertClick }: TopBarProps) {
             KubeForge
           </span>
         </div>
+        {/* Tabs */}
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -44,18 +46,21 @@ export function TopBar({ activeTab, onTabChange, onAlertClick }: TopBarProps) {
               background: activeTab === tab.id ? 'rgba(167, 139, 250, 0.15)' : 'transparent',
               borderColor: activeTab === tab.id ? 'rgba(167, 139, 250, 0.4)' : 'transparent',
               color: activeTab === tab.id ? '#a78bfa' : '#94a3b8',
-            }}
-          >
+            }}>
             <span className="text-xs">{tab.icon}</span>
             {tab.label}
           </button>
         ))}
       </div>
 
-      {/* Right: Cluster info + Alert bell */}
+      {/* Right */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1 rounded text-xs font-mono"
-          style={{ background: '#0f172a', border: '1px solid #1e293b' }}>
+        <div className="flex items-center gap-2 px-3 py-1 rounded text-xs"
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            background: '#0f172a',
+            border: '1px solid #1e293b',
+          }}>
           <span>☸️</span>
           <span style={{ color: '#94a3b8' }}>prod-cluster-01</span>
           <span style={{ color: '#4ade80' }}>●</span>
@@ -63,9 +68,8 @@ export function TopBar({ activeTab, onTabChange, onAlertClick }: TopBarProps) {
         </div>
         <button
           onClick={onAlertClick}
-          className="relative p-1.5 rounded transition-colors"
-          style={{ color: '#94a3b8' }}
-        >
+          className="relative p-1.5 rounded transition-colors hover:bg-[#1e293b]"
+          style={{ color: '#94a3b8' }}>
           <Bell size={16} />
           {firingCount > 0 && (
             <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-white font-bold"

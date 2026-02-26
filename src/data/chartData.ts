@@ -1,4 +1,4 @@
-export function generateChartData(baseValue: number, variance: number): { time: string; value: number }[] {
+function generateChartData(baseValue: number, variance: number): { time: string; value: number }[] {
   const data: { time: string; value: number }[] = [];
   for (let i = 0; i < 24; i++) {
     const hour = i.toString().padStart(2, '0') + ':00';

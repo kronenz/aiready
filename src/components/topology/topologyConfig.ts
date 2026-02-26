@@ -28,7 +28,6 @@ const categoryOrder: Record<string, string[]> = {
 export function buildNodes(): Node[] {
   const nodes: Node[] = [];
 
-  // Layer label nodes
   Object.entries(layerLabels).forEach(([cat, label]) => {
     nodes.push({
       id: `label-${cat}`,
@@ -53,7 +52,6 @@ export function buildNodes(): Node[] {
     });
   });
 
-  // Component nodes
   Object.entries(categoryOrder).forEach(([cat, ids]) => {
     const xStart = 170;
     const spacing = 155;
@@ -80,32 +78,26 @@ export function buildNodes(): Node[] {
 }
 
 export function buildEdges(): Edge[] {
-  const edges: Edge[] = [
-    // Platform → Infrastructure
+  return [
+    // Platform → Infra
     { id: 'e-argocd-k8s', source: 'argocd', target: 'kubernetes', style: { stroke: '#3b82f6' } },
-
-    // Observability chain
+    // Observability
     { id: 'e-prom-thanos', source: 'prometheus', target: 'thanos', style: { stroke: '#f97316' } },
     { id: 'e-thanos-grafana', source: 'thanos', target: 'grafana', style: { stroke: '#f97316' } },
     { id: 'e-fb-os', source: 'fluentbit', target: 'opensearch', style: { stroke: '#f97316' } },
-
     // Data pipeline (animated)
     { id: 'e-airflow-spark', source: 'airflow', target: 'spark', animated: true, style: { stroke: '#06b6d4' } },
     { id: 'e-spark-iceberg', source: 'spark', target: 'iceberg', animated: true, style: { stroke: '#06b6d4' } },
     { id: 'e-iceberg-minio', source: 'iceberg', target: 'minio', animated: true, style: { stroke: '#06b6d4' } },
     { id: 'e-kafka-spark', source: 'kafka', target: 'spark', animated: true, style: { stroke: '#06b6d4' } },
-
-    // Data dependencies
+    // Data deps
     { id: 'e-trino-iceberg', source: 'trino', target: 'iceberg', style: { stroke: '#06b6d4' } },
     { id: 'e-thanos-minio', source: 'thanos', target: 'minio', style: { stroke: '#f97316' } },
     { id: 'e-hive-pg', source: 'hive-metastore', target: 'postgresql', style: { stroke: '#06b6d4' } },
     { id: 'e-iceberg-hive', source: 'iceberg', target: 'hive-metastore', style: { stroke: '#06b6d4' } },
-
-    // Agent connections (animated, purple)
+    // Agent (animated, purple)
     { id: 'e-kagent-prom', source: 'kagent', target: 'prometheus', animated: true, style: { stroke: '#a78bfa' } },
     { id: 'e-kagent-os', source: 'kagent', target: 'opensearch', animated: true, style: { stroke: '#a78bfa' } },
     { id: 'e-kagent-argocd', source: 'kagent', target: 'argocd', animated: true, style: { stroke: '#a78bfa' } },
   ];
-
-  return edges;
 }

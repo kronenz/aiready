@@ -19,7 +19,7 @@ export const compatibilityMatrix = {
     ['✅', '✅', '✅', '✅', '✅', '✅'],
     ['❌', '✅', '✅', '✅', '✅', '✅'],
     ['✅', '✅', '✅', '—', '—', '—'],
-  ],
+  ] as string[][],
 };
 
 export const upgradeSteps = [

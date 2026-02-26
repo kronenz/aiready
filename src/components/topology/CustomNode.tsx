@@ -23,12 +23,9 @@ export const CustomNode = memo(({ data, selected }: NodeProps) => {
         boxShadow: selected ? '0 0 16px rgba(167, 139, 250, 0.25)' : 'none',
       }}
     >
-      {/* Warning badge */}
       {status === 'warn' && (
         <span className="absolute -top-1.5 -left-1.5 text-xs">⚠️</span>
       )}
-
-      {/* Operator badge */}
       {isOperator && (
         <span className="absolute -top-1.5 -right-1.5 px-1 py-0 rounded text-white font-bold"
           style={{ fontSize: '7px', background: '#eab308', lineHeight: '14px' }}>
@@ -40,14 +37,12 @@ export const CustomNode = memo(({ data, selected }: NodeProps) => {
         <span className="text-base">{icon}</span>
         <div>
           <div className="font-bold text-white" style={{ fontSize: '11px', lineHeight: '14px' }}>{label}</div>
-          <div className="font-mono" style={{ fontSize: '9px', color, lineHeight: '12px' }}>{version}</div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '9px', color, lineHeight: '12px' }}>{version}</div>
         </div>
       </div>
 
-      <Handle type="target" position={Position.Left} className="!w-1.5 !h-1.5 !border-0"
-        style={{ background: '#334155' }} />
-      <Handle type="source" position={Position.Right} className="!w-1.5 !h-1.5 !border-0"
-        style={{ background: '#334155' }} />
+      <Handle type="target" position={Position.Left} className="!w-1.5 !h-1.5 !border-0" style={{ background: '#334155' }} />
+      <Handle type="source" position={Position.Right} className="!w-1.5 !h-1.5 !border-0" style={{ background: '#334155' }} />
     </div>
   );
 });
