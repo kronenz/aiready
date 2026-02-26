@@ -22,7 +22,7 @@ export function TopBar({ activeView }: TopBarProps) {
       px="5"
       gap="4"
       className="h-12 shrink-0"
-      style={{ background: 'rgba(12,16,24,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--color-border)' }}
+      style={{ background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--color-border)' }}
     >
       <Flex align="center" gap="2" className="flex-1">
         <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{info.title}</Text>

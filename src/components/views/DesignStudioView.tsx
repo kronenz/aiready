@@ -50,6 +50,8 @@ export function DesignStudioView() {
     { type: 'warn', msg: 'Hive Metastore 3.1.3 — EOL 예정, 4.0 권장' },
     { type: 'pass', msg: '50노드 규모 → Thanos 자동 추가 완료' },
     { type: 'pass', msg: 'ArgoCD Sync Wave 순서 검증 OK' },
+    { type: 'pass', msg: 'K8s 1.31.2 Control Plane HA (3-node) 확인' },
+    { type: 'pass', msg: 'GPU Node Pool A100×4 — Spark ML 호환 OK' },
   ], []);
 
   return (
@@ -76,26 +78,26 @@ export function DesignStudioView() {
           onNodeClick={onNodeClick}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.15 }}
+          fitViewOptions={{ padding: 0.12 }}
           proOptions={{ hideAttribution: true }}
         >
-          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#1e293b40" />
+          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#94a3b820" />
           <Controls position="bottom-right" />
           <MiniMap
             position="bottom-left"
             nodeColor={(n: Node) => {
               if (n.type === 'layerLabel') return 'transparent';
               const d = n.data as TopoNodeData;
-              if (d.status === 'error') return '#f87171';
-              if (d.status === 'warning') return '#fbbf24';
-              return '#4ade80';
+              if (d.status === 'error') return '#ef4444';
+              if (d.status === 'warning') return '#eab308';
+              return '#22c55e';
             }}
-            maskColor="#06090fcc"
+            maskColor="#f1f5f9cc"
           />
         </ReactFlow>
 
         {/* Validation Panel */}
-        <Card size="1" variant="surface" className="absolute top-3 right-3 w-[270px]" style={{ zIndex: 20, background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+        <Card size="1" variant="surface" className="absolute top-3 right-3 w-[270px]" style={{ zIndex: 20, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <Flex align="center" gap="2" mb="2">
             <CheckCircle size={13} style={{ color: 'var(--color-accent-green)' }} />
             <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Validation</Text>
@@ -117,7 +119,7 @@ export function DesignStudioView() {
 
         {/* Component Inspector */}
         {selected && (
-          <Card size="2" variant="surface" className="absolute bottom-16 right-3 w-[270px] anim-fade" style={{ zIndex: 20, background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+          <Card size="2" variant="surface" className="absolute bottom-16 right-3 w-[270px] anim-fade" style={{ zIndex: 20, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <Flex align="center" justify="between" mb="2">
               <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Component Inspector</Text>
               <IconButton size="1" variant="ghost" color="gray" onClick={() => setSelected(null)}>
@@ -134,19 +136,19 @@ export function DesignStudioView() {
             </Flex>
             <div className="grid grid-cols-3 gap-2 text-center">
               {selected.cpu && (
-                <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid var(--color-border)' }}>
                   <Text size="1" style={{ color: 'var(--color-text-muted)', display: 'block', fontSize: 9 }}>CPU</Text>
                   <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{selected.cpu}</Text>
                 </Card>
               )}
               {selected.memory && (
-                <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid var(--color-border)' }}>
                   <Text size="1" style={{ color: 'var(--color-text-muted)', display: 'block', fontSize: 9 }}>Memory</Text>
                   <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{selected.memory}</Text>
                 </Card>
               )}
               {selected.replicas && (
-                <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid var(--color-border)' }}>
                   <Text size="1" style={{ color: 'var(--color-text-muted)', display: 'block', fontSize: 9 }}>Replicas</Text>
                   <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{selected.replicas}</Text>
                 </Card>

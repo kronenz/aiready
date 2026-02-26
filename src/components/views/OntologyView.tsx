@@ -17,7 +17,7 @@ import type { TopoNodeData } from '../../data/topology';
 
 const nodeTypes = { default: TopoNode };
 
-/* Spread nodes further apart to prevent edge label overlap */
+/* Spread nodes apart for readable edge labels */
 const ontoNodes: Node<TopoNodeData>[] = [
   { id: 'flink', position: { x: 0, y: 0 }, data: { label: 'Apache Flink', icon: '🌊', version: '1.19', status: 'healthy', category: 'StreamProcessor', layer: 'conflicts_with: Spark (soft)' } },
   { id: 'spark', position: { x: 380, y: 0 }, data: { label: 'Apache Spark', icon: '✨', version: '3.5.3', status: 'healthy', category: 'BatchProcessor', layer: 'provides: SparkSubmit, StructuredStreaming' } },
@@ -29,19 +29,20 @@ const ontoNodes: Node<TopoNodeData>[] = [
   { id: 'pg', position: { x: 680, y: 700 }, data: { label: 'PostgreSQL', icon: '🐘', version: '16.4', status: 'healthy', category: 'RDBMS', layer: 'provides: PostgresWire' } },
 ];
 
-const edgeLabelBg = { edgeLabelBgPadding: [6, 3] as [number, number], edgeLabelBgBorderRadius: 4, edgeLabelBgStyle: { fill: '#0c1018', stroke: '#1e293b', strokeWidth: 1 } };
+/* Edge label with white bg for light theme */
+const edgeLabelBg = { edgeLabelBgPadding: [6, 3] as [number, number], edgeLabelBgBorderRadius: 4, edgeLabelBgStyle: { fill: '#ffffff', stroke: '#e2e8f0', strokeWidth: 1 } };
 
 const ontoEdges: Edge[] = [
-  { id: 'e10', source: 'flink', target: 'spark', label: 'CONFLICTS_WITH', type: 'smoothstep', style: { stroke: '#f87171', strokeDasharray: '5 5' }, labelStyle: { fill: '#f87171', fontSize: 9, fontWeight: 600 }, ...edgeLabelBg },
-  { id: 'e1', source: 'spark', target: 'iceberg', label: 'COMPATIBLE', type: 'smoothstep', animated: true, style: { stroke: '#a78bfa' }, labelStyle: { fill: '#a78bfa', fontSize: 9, fontWeight: 600 }, ...edgeLabelBg },
-  { id: 'e3', source: 'spark', target: 'spark-op', label: 'MANAGED_BY', type: 'smoothstep', style: { stroke: '#4ade80' }, labelStyle: { fill: '#4ade80', fontSize: 9, fontWeight: 600 }, ...edgeLabelBg },
-  { id: 'e2', source: 'spark', target: 'hive', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#fbbf24' }, labelStyle: { fill: '#fbbf24', fontSize: 9 }, ...edgeLabelBg },
-  { id: 'e4', source: 'spark', target: 'minio', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#fbbf24' }, labelStyle: { fill: '#fbbf24', fontSize: 9 }, ...edgeLabelBg },
-  { id: 'e5', source: 'iceberg', target: 'hive', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#fbbf24' }, labelStyle: { fill: '#fbbf24', fontSize: 9 }, ...edgeLabelBg },
-  { id: 'e6', source: 'iceberg', target: 'minio', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#fbbf24' }, labelStyle: { fill: '#fbbf24', fontSize: 9 }, ...edgeLabelBg },
-  { id: 'e7', source: 'trino', target: 'hive', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#38bdf8' }, labelStyle: { fill: '#38bdf8', fontSize: 9 }, ...edgeLabelBg },
-  { id: 'e8', source: 'hive', target: 'pg', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#fbbf24' }, labelStyle: { fill: '#fbbf24', fontSize: 9 }, ...edgeLabelBg },
-  { id: 'e9', source: 'hive', target: 'minio', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#38bdf844' }, labelStyle: { fill: '#8b949e', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e10', source: 'flink', target: 'spark', label: 'CONFLICTS_WITH', type: 'smoothstep', style: { stroke: '#dc2626', strokeDasharray: '5 5' }, labelStyle: { fill: '#dc2626', fontSize: 9, fontWeight: 600 }, ...edgeLabelBg },
+  { id: 'e1', source: 'spark', target: 'iceberg', label: 'COMPATIBLE', type: 'smoothstep', animated: true, style: { stroke: '#7c3aed' }, labelStyle: { fill: '#7c3aed', fontSize: 9, fontWeight: 600 }, ...edgeLabelBg },
+  { id: 'e3', source: 'spark', target: 'spark-op', label: 'MANAGED_BY', type: 'smoothstep', style: { stroke: '#16a34a' }, labelStyle: { fill: '#16a34a', fontSize: 9, fontWeight: 600 }, ...edgeLabelBg },
+  { id: 'e2', source: 'spark', target: 'hive', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#ca8a04' }, labelStyle: { fill: '#ca8a04', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e4', source: 'spark', target: 'minio', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#ca8a04' }, labelStyle: { fill: '#ca8a04', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e5', source: 'iceberg', target: 'hive', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#ca8a04' }, labelStyle: { fill: '#ca8a04', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e6', source: 'iceberg', target: 'minio', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#ca8a04' }, labelStyle: { fill: '#ca8a04', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e7', source: 'trino', target: 'hive', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#2563eb' }, labelStyle: { fill: '#2563eb', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e8', source: 'hive', target: 'pg', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#ca8a04' }, labelStyle: { fill: '#ca8a04', fontSize: 9 }, ...edgeLabelBg },
+  { id: 'e9', source: 'hive', target: 'minio', label: 'DEPENDS_ON', type: 'smoothstep', style: { stroke: '#94a3b8' }, labelStyle: { fill: '#94a3b8', fontSize: 9 }, ...edgeLabelBg },
 ];
 
 const queryExamples = [
@@ -77,21 +78,21 @@ export function OntologyView() {
           fitViewOptions={{ padding: 0.25 }}
           proOptions={{ hideAttribution: true }}
         >
-          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#1e293b40" />
+          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#94a3b820" />
           <Controls position="bottom-right" />
-          {/* Legend — inside ReactFlow so it stays above graph */}
+          {/* Legend */}
           <Panel position="top-left">
-            <Card size="1" variant="surface" style={{ background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+            <Card size="1" variant="surface" style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               <Flex align="center" gap="2" mb="2">
                 <Database size={13} style={{ color: 'var(--color-accent-purple)' }} />
                 <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>관계 범례</Text>
               </Flex>
               <Flex direction="column" gap="2">
-                <LegendItem color="#fbbf24" label="DEPENDS_ON" />
-                <LegendItem color="#a78bfa" label="COMPATIBLE" />
-                <LegendItem color="#4ade80" label="MANAGED_BY" />
-                <LegendItem color="#38bdf8" label="DEPENDS_ON (query)" />
-                <LegendItem color="#f87171" label="CONFLICTS_WITH" dashed />
+                <LegendItem color="#ca8a04" label="DEPENDS_ON" />
+                <LegendItem color="#7c3aed" label="COMPATIBLE" />
+                <LegendItem color="#16a34a" label="MANAGED_BY" />
+                <LegendItem color="#2563eb" label="DEPENDS_ON (query)" />
+                <LegendItem color="#dc2626" label="CONFLICTS_WITH" dashed />
               </Flex>
             </Card>
           </Panel>
@@ -118,8 +119,8 @@ export function OntologyView() {
                 onClick={() => setSelectedQuery(i)}
                 style={{
                   cursor: 'pointer',
-                  background: selectedQuery === i ? 'rgba(167,139,250,0.08)' : 'var(--color-bg-primary)',
-                  border: `1px solid ${selectedQuery === i ? 'rgba(167,139,250,0.3)' : 'var(--color-border)'}`,
+                  background: selectedQuery === i ? 'rgba(124,58,237,0.04)' : '#ffffff',
+                  border: `1px solid ${selectedQuery === i ? 'rgba(124,58,237,0.25)' : 'var(--color-border)'}`,
                 }}
               >
                 <Text size="1" weight="medium" style={{ color: 'var(--color-text-primary)' }}>{q.q}</Text>
@@ -134,7 +135,7 @@ export function OntologyView() {
 
         <Box p="3" style={{ borderTop: '1px solid var(--color-border)' }}>
           <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', marginBottom: 6, display: 'block' }}>Response</Text>
-          <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', maxHeight: 280, overflow: 'auto' }}>
+          <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid var(--color-border)', maxHeight: 280, overflow: 'auto' }}>
             <Text size="1" className="font-mono" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 1.7, fontSize: 10 }}>
               {queryResults[selectedQuery]}
             </Text>

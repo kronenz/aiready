@@ -70,7 +70,7 @@ function VersionsTab() {
         </div>
 
         {/* Table */}
-        <Card size="1" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)', overflow: 'hidden' }}>
+        <Card size="1" variant="surface" style={{ background: '#ffffff', border: '1px solid var(--color-border)', overflow: 'hidden' }}>
           <Table.Root size="1">
             <Table.Header>
               <Table.Row>
@@ -119,21 +119,21 @@ function UpgradeTab() {
   return (
     <ScrollArea scrollbars="vertical">
       <Flex direction="column" gap="4" p="5">
-        <Card size="2" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+        <Card size="2" variant="surface" style={{ background: '#ffffff', border: '1px solid var(--color-border)' }}>
           <Heading size="3" mb="1" style={{ color: 'var(--color-text-primary)' }}>Spark 3.5.3 → 3.6.0 업그레이드 시뮬레이션</Heading>
           <Text size="1" mb="4" style={{ color: 'var(--color-text-muted)', display: 'block' }}>온톨로지 기반 자동 경로 계산 · 예상 다운타임 15분 · 롤백 가능</Text>
 
           <Flex direction="column" gap="2">
             {upgradePathExample.map((step) => (
               <Card key={step.order} size="1" variant="surface" style={{
-                background: step.status === 'done' ? 'rgba(74,222,128,0.04)' : step.status === 'in-progress' ? 'rgba(56,189,248,0.08)' : 'var(--color-bg-primary)',
-                border: `1px solid ${step.status === 'done' ? 'rgba(74,222,128,0.2)' : step.status === 'in-progress' ? 'rgba(56,189,248,0.25)' : 'var(--color-border)'}`,
+                background: step.status === 'done' ? 'rgba(22,163,74,0.04)' : step.status === 'in-progress' ? 'rgba(37,99,235,0.04)' : '#f8fafc',
+                border: `1px solid ${step.status === 'done' ? 'rgba(22,163,74,0.2)' : step.status === 'in-progress' ? 'rgba(37,99,235,0.2)' : 'var(--color-border)'}`,
               }}>
                 <Flex align="center" gap="3">
                   <Flex align="center" justify="center" style={{
                     width: 26, height: 26, borderRadius: '50%', flexShrink: 0, fontSize: 10, fontWeight: 700,
-                    background: step.status === 'done' ? 'rgba(74,222,128,0.12)' : step.status === 'in-progress' ? 'rgba(56,189,248,0.12)' : 'var(--color-bg-hover)',
-                    color: step.status === 'done' ? '#4ade80' : step.status === 'in-progress' ? '#38bdf8' : '#64748b',
+                    background: step.status === 'done' ? 'rgba(22,163,74,0.08)' : step.status === 'in-progress' ? 'rgba(37,99,235,0.08)' : '#f1f5f9',
+                    color: step.status === 'done' ? '#16a34a' : step.status === 'in-progress' ? '#2563eb' : '#94a3b8',
                     fontFamily: "'JetBrains Mono', monospace",
                   }}>
                     {step.order}
@@ -144,9 +144,9 @@ function UpgradeTab() {
                     <ChevronRight size={10} style={{ color: 'var(--color-text-muted)' }} />
                     <Text size="1" style={{ color: 'var(--color-text-secondary)' }}>{step.detail}</Text>
                   </Flex>
-                  {step.status === 'done' && <CheckCircle size={15} style={{ color: '#4ade80' }} />}
-                  {step.status === 'in-progress' && <Clock size={15} className="animate-pulse" style={{ color: '#38bdf8' }} />}
-                  {step.status === 'pending' && <Box style={{ width: 15, height: 15, borderRadius: '50%', border: '2px solid #64748b' }} />}
+                  {step.status === 'done' && <CheckCircle size={15} style={{ color: '#16a34a' }} />}
+                  {step.status === 'in-progress' && <Clock size={15} className="animate-pulse" style={{ color: '#2563eb' }} />}
+                  {step.status === 'pending' && <Box style={{ width: 15, height: 15, borderRadius: '50%', border: '2px solid #94a3b8' }} />}
                 </Flex>
               </Card>
             ))}
@@ -161,38 +161,38 @@ function DriftTab() {
   return (
     <ScrollArea scrollbars="vertical">
       <Flex direction="column" gap="4" p="5">
-        <Card size="2" variant="surface" style={{ background: 'rgba(248,113,113,0.04)', border: '1px solid rgba(248,113,113,0.2)' }}>
+        <Card size="2" variant="surface" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.15)' }}>
           <Flex align="center" gap="2" mb="1">
-            <AlertTriangle size={14} style={{ color: '#f87171' }} />
-            <Text size="2" weight="bold" style={{ color: '#f87171' }}>{driftData.length}건의 드리프트 감지</Text>
+            <AlertTriangle size={14} style={{ color: '#dc2626' }} />
+            <Text size="2" weight="bold" style={{ color: '#dc2626' }}>{driftData.length}건의 드리프트 감지</Text>
           </Flex>
           <Text size="1" style={{ color: 'var(--color-text-secondary)' }}>실제 클러스터 상태 vs Git 선언 상태 vs 온톨로지 3-way 비교</Text>
         </Card>
 
         {driftData.map((d, i) => (
           <Card key={i} size="2" variant="surface" style={{
-            background: 'var(--color-bg-secondary)',
-            border: `1px solid ${d.severity === 'critical' ? 'rgba(248,113,113,0.25)' : 'rgba(251,191,36,0.25)'}`,
+            background: '#ffffff',
+            border: `1px solid ${d.severity === 'critical' ? 'rgba(220,38,38,0.2)' : 'rgba(202,138,4,0.2)'}`,
           }}>
             <Flex align="center" justify="between" mb="3">
               <Flex align="center" gap="2">
-                <AlertTriangle size={13} style={{ color: d.severity === 'critical' ? '#f87171' : '#fbbf24' }} />
+                <AlertTriangle size={13} style={{ color: d.severity === 'critical' ? '#dc2626' : '#ca8a04' }} />
                 <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{d.component}</Text>
                 <Badge size="1" variant="soft" color={d.severity === 'critical' ? 'red' : 'orange'}>{d.severity.toUpperCase()}</Badge>
               </Flex>
               <Code size="1" variant="ghost" color="gray">{d.detected}</Code>
             </Flex>
             <div className="grid grid-cols-3 gap-2">
-              <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+              <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid var(--color-border)' }}>
                 <Text size="1" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block' }}>Field</Text>
                 <Code size="1" weight="bold">{d.field}</Code>
               </Card>
-              <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid rgba(74,222,128,0.2)' }}>
-                <Text size="1" style={{ color: '#4ade80', fontSize: 9, display: 'block' }}>Expected (Git)</Text>
+              <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid rgba(22,163,74,0.2)' }}>
+                <Text size="1" style={{ color: '#16a34a', fontSize: 9, display: 'block' }}>Expected (Git)</Text>
                 <Code size="1" color="green" weight="bold">{d.expected}</Code>
               </Card>
-              <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid rgba(248,113,113,0.2)' }}>
-                <Text size="1" style={{ color: '#f87171', fontSize: 9, display: 'block' }}>Actual (Cluster)</Text>
+              <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid rgba(220,38,38,0.2)' }}>
+                <Text size="1" style={{ color: '#dc2626', fontSize: 9, display: 'block' }}>Actual (Cluster)</Text>
                 <Code size="1" color="red" weight="bold">{d.actual}</Code>
               </Card>
             </div>
@@ -205,7 +205,7 @@ function DriftTab() {
 
 function SummaryCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <Card size="2" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)', textAlign: 'center' }}>
+    <Card size="2" variant="surface" style={{ background: '#ffffff', border: '1px solid var(--color-border)', textAlign: 'center' }}>
       <Text size="5" weight="bold" className="font-mono" style={{ color, display: 'block' }}>{value}</Text>
       <Text size="1" style={{ color: 'var(--color-text-muted)' }}>{label}</Text>
     </Card>

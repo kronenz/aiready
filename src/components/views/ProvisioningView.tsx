@@ -10,10 +10,10 @@ const stageIcons: Record<string, React.ReactNode> = {
 };
 
 const healthDot: Record<string, string> = {
-  Healthy: '#4ade80',
-  Progressing: '#38bdf8',
-  Degraded: '#f87171',
-  Missing: '#64748b',
+  Healthy: '#22c55e',
+  Progressing: '#3b82f6',
+  Degraded: '#ef4444',
+  Missing: '#94a3b8',
 };
 
 const syncBadgeColor: Record<string, 'green' | 'blue' | 'gray'> = {
@@ -47,8 +47,8 @@ export function ProvisioningView() {
                   variant="surface"
                   style={{
                     minWidth: 175,
-                    background: stage.status === 'active' ? 'rgba(56,189,248,0.08)' : 'var(--color-bg-secondary)',
-                    border: `1px solid ${stage.status === 'active' ? 'rgba(56,189,248,0.25)' : 'var(--color-border)'}`,
+                    background: stage.status === 'active' ? 'rgba(37,99,235,0.04)' : '#ffffff',
+                    border: `1px solid ${stage.status === 'active' ? 'rgba(37,99,235,0.2)' : 'var(--color-border)'}`,
                     opacity: stage.status === 'pending' ? 0.6 : 1,
                   }}
                 >
@@ -70,7 +70,7 @@ export function ProvisioningView() {
         </Box>
 
         {/* Progress */}
-        <Card size="2" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+        <Card size="2" variant="surface" style={{ background: '#ffffff', border: '1px solid var(--color-border)' }}>
           <Flex align="center" justify="between" mb="2">
             <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>전체 배포 진행률</Text>
             <Text size="2" weight="bold" className="font-mono" style={{ color: 'var(--color-accent-blue)' }}>{progress}%</Text>
@@ -92,10 +92,10 @@ export function ProvisioningView() {
                   <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-muted)', marginBottom: 8, display: 'block' }}>{waveLabels[wave]}</Text>
                   <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                     {waveApps.map((app) => (
-                      <Card key={app.name} size="1" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+                      <Card key={app.name} size="1" variant="surface" style={{ background: '#ffffff', border: '1px solid var(--color-border)' }}>
                         <Flex align="center" justify="between" mb="1">
                           <Text size="1" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{app.name}</Text>
-                          <Box className={app.health === 'Progressing' ? 'animate-pulse' : ''} style={{ width: 8, height: 8, borderRadius: '50%', background: healthDot[app.health] || '#64748b' }} />
+                          <Box className={app.health === 'Progressing' ? 'animate-pulse' : ''} style={{ width: 8, height: 8, borderRadius: '50%', background: healthDot[app.health] || '#94a3b8' }} />
                         </Flex>
                         <Flex align="center" gap="2">
                           <Badge size="1" variant="soft" color={syncBadgeColor[app.status] || 'gray'} style={{ fontSize: 8 }}>{app.status}</Badge>
@@ -114,7 +114,7 @@ export function ProvisioningView() {
         <Separator size="4" style={{ background: 'var(--color-border)' }} />
 
         {/* Generated Repo Structure */}
-        <Card size="2" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+        <Card size="2" variant="surface" style={{ background: '#ffffff', border: '1px solid var(--color-border)' }}>
           <Text size="2" weight="bold" mb="2" style={{ color: 'var(--color-text-primary)', display: 'block' }}>생성된 Git Repo 구조</Text>
           <Code size="2" variant="ghost" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre', lineHeight: 1.8, fontSize: 10 }}>
 {`kubeforge-deploy/

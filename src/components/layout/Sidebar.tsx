@@ -54,12 +54,12 @@ export function Sidebar({ active, onChange }: SidebarProps) {
                   width: '100%',
                   textAlign: 'left',
                   transition: 'all 0.2s',
-                  background: isActive ? 'rgba(167,139,250,0.12)' : 'transparent',
+                  background: isActive ? 'rgba(124,58,237,0.08)' : 'transparent',
                   color: isActive ? 'var(--color-accent-purple)' : 'var(--color-text-secondary)',
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(30,41,59,0.5)';
+                    e.currentTarget.style.background = '#f1f5f9';
                     e.currentTarget.style.color = 'var(--color-text-primary)';
                   }
                 }}
@@ -96,7 +96,7 @@ export function Sidebar({ active, onChange }: SidebarProps) {
           <Box className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
           <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)' }}>prod-cluster-01</Text>
         </Flex>
-        <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9 }}>15 components · 50 nodes</Text>
+        <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9 }}>23 components · 57 nodes</Text>
       </Box>
     </Flex>
   );

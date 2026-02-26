@@ -7,7 +7,7 @@ import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Theme appearance="dark" accentColor="violet" grayColor="slate" radius="large" scaling="95%">
+    <Theme appearance="light" accentColor="violet" grayColor="slate" radius="large" scaling="95%">
       <App />
     </Theme>
   </StrictMode>,

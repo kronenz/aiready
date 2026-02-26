@@ -30,8 +30,8 @@ export function AgentView() {
                 onClick={() => setSelectedAgent(a.id)}
                 style={{
                   cursor: 'pointer',
-                  background: selectedAgent === a.id ? 'rgba(167,139,250,0.08)' : 'var(--color-bg-primary)',
-                  border: `1px solid ${selectedAgent === a.id ? 'rgba(167,139,250,0.3)' : 'var(--color-border)'}`,
+                  background: selectedAgent === a.id ? 'rgba(124,58,237,0.04)' : '#ffffff',
+                  border: `1px solid ${selectedAgent === a.id ? 'rgba(124,58,237,0.25)' : 'var(--color-border)'}`,
                 }}
               >
                 <Flex align="center" gap="2" mb="1">
@@ -71,7 +71,7 @@ export function AgentView() {
       {/* Chat Area */}
       <Flex direction="column" className="flex-1">
         {/* Agent Header */}
-        <Flex align="center" gap="3" px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)', background: 'rgba(12,16,24,0.5)' }}>
+        <Flex align="center" gap="3" px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)', background: 'rgba(248,250,252,0.8)' }}>
           <Text size="5">{agent.icon}</Text>
           <Box className="flex-1">
             <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)', display: 'block' }}>{agent.name} Agent</Text>

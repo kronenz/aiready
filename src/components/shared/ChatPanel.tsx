@@ -28,7 +28,7 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
             <Box key={msg.id} className="anim-fade" style={{ minWidth: 0 }}>
               {msg.role === 'user' && (
                 <Flex justify="end" style={{ minWidth: 0 }}>
-                  <Card size="1" variant="surface" style={{ maxWidth: '85%', minWidth: 0, background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '14px 14px 4px 14px', overflow: 'hidden' }}>
+                  <Card size="1" variant="surface" style={{ maxWidth: '85%', minWidth: 0, background: 'rgba(124,58,237,0.06)', border: '1px solid rgba(124,58,237,0.15)', borderRadius: '14px 14px 4px 14px', overflow: 'hidden' }}>
                     <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{msg.content}</Text>
                     <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block', textAlign: 'right', marginTop: 4 }}>{msg.timestamp}</Text>
                   </Card>
@@ -42,7 +42,7 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
                     <Code size="1" color="cyan" variant="ghost" style={{ fontSize: 9, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', minWidth: 0 }}>{msg.toolName}</Code>
                   </Flex>
                   {msg.toolResult && (
-                    <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', overflow: 'hidden', minWidth: 0 }}>
+                    <Card size="1" variant="surface" style={{ background: '#f8fafc', border: '1px solid var(--color-border)', overflow: 'hidden', minWidth: 0 }}>
                       <Text size="1" className="font-mono" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: 1.7, fontSize: 10 }}>{msg.toolResult}</Text>
                     </Card>
                   )}
@@ -51,7 +51,7 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
 
               {msg.role === 'assistant' && (
                 <Flex justify="start" style={{ minWidth: 0 }}>
-                  <Card size="1" variant="surface" style={{ maxWidth: '90%', minWidth: 0, background: 'rgba(17,24,39,0.5)', border: '1px solid var(--color-border)', borderRadius: '14px 14px 14px 4px', overflow: 'hidden' }}>
+                  <Card size="1" variant="surface" style={{ maxWidth: '90%', minWidth: 0, background: '#f8fafc', border: '1px solid var(--color-border)', borderRadius: '14px 14px 14px 4px', overflow: 'hidden' }}>
                     <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{msg.content}</Text>
                     <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block', marginTop: 4 }}>{msg.timestamp}</Text>
                   </Card>
