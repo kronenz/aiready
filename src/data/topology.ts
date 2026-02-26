@@ -10,15 +10,17 @@ export interface TopoNodeData {
   cpu?: string;
   memory?: string;
   replicas?: number;
+  isLayerLabel?: boolean;
   [key: string]: unknown;
 }
 
+/* Increased vertical spacing between layers to prevent overlap */
 const layerY: Record<string, number> = {
   'L0-Infra': 0,
-  'L1-Storage': 150,
-  'L2-Platform': 300,
-  'L3-Data': 450,
-  'L4-App': 600,
+  'L1-Storage': 200,
+  'L2-Platform': 400,
+  'L3-Data': 600,
+  'L4-App': 800,
 };
 
 const nodeStyle = (color: string) => ({
@@ -29,7 +31,18 @@ const nodeStyle = (color: string) => ({
   width: 180,
 });
 
+/* Layer label nodes — rendered inside ReactFlow so they scroll/zoom with canvas */
+const layerLabelNodes: Node<TopoNodeData>[] = [
+  { id: 'label-l0', type: 'layerLabel', position: { x: -100, y: layerY['L0-Infra'] + 30 }, data: { label: 'L0 — Infrastructure', icon: '', version: '', status: 'healthy', category: '', layer: '' }, draggable: false, selectable: false, connectable: false },
+  { id: 'label-l1', type: 'layerLabel', position: { x: -100, y: layerY['L1-Storage'] + 30 }, data: { label: 'L1 — Storage & Data', icon: '', version: '', status: 'healthy', category: '', layer: '' }, draggable: false, selectable: false, connectable: false },
+  { id: 'label-l2', type: 'layerLabel', position: { x: -100, y: layerY['L2-Platform'] + 30 }, data: { label: 'L2 — Monitoring & Logging', icon: '', version: '', status: 'healthy', category: '', layer: '' }, draggable: false, selectable: false, connectable: false },
+  { id: 'label-l3', type: 'layerLabel', position: { x: -100, y: layerY['L3-Data'] + 30 }, data: { label: 'L3 — Data Processing', icon: '', version: '', status: 'healthy', category: '', layer: '' }, draggable: false, selectable: false, connectable: false },
+  { id: 'label-l4', type: 'layerLabel', position: { x: -100, y: layerY['L4-App'] + 30 }, data: { label: 'L4 — Applications', icon: '', version: '', status: 'healthy', category: '', layer: '' }, draggable: false, selectable: false, connectable: false },
+];
+
 export const topologyNodes: Node<TopoNodeData>[] = [
+  ...layerLabelNodes,
+
   // L0 - Infrastructure
   { id: 'cilium', position: { x: 50, y: layerY['L0-Infra'] }, data: { label: 'Cilium CNI', icon: '🔒', version: '1.16.1', status: 'healthy', category: 'Networking', layer: 'L0-Infra', cpu: '200m', memory: '256Mi', replicas: 3 }, style: nodeStyle('#22d3ee') },
   { id: 'cert-manager', position: { x: 280, y: layerY['L0-Infra'] }, data: { label: 'cert-manager', icon: '🔐', version: '1.15.3', status: 'healthy', category: 'Security', layer: 'L0-Infra', cpu: '100m', memory: '128Mi', replicas: 1 }, style: nodeStyle('#f472b6') },
@@ -50,50 +63,42 @@ export const topologyNodes: Node<TopoNodeData>[] = [
 
   // L3 - Data Processing
   { id: 'spark', position: { x: 120, y: layerY['L3-Data'] }, data: { label: 'Apache Spark', icon: '✨', version: '3.5.3', status: 'healthy', category: 'Batch Processing', layer: 'L3-Data', cpu: '2-8', memory: '4Gi-32Gi', replicas: 20 }, style: nodeStyle('#a78bfa') },
-  { id: 'iceberg', position: { x: 350, y: layerY['L3-Data'] }, data: { label: 'Apache Iceberg', icon: '🧊', version: '1.6.1', status: 'healthy', category: 'Table Format', layer: 'L3-Data', cpu: '-', memory: '-' }, style: nodeStyle('#22d3ee') },
-  { id: 'trino', position: { x: 580, y: layerY['L3-Data'] }, data: { label: 'Trino', icon: '🔎', version: '460', status: 'healthy', category: 'SQL Engine', layer: 'L3-Data', cpu: '4', memory: '16Gi', replicas: 6 }, style: nodeStyle('#38bdf8') },
+  { id: 'iceberg', position: { x: 400, y: layerY['L3-Data'] }, data: { label: 'Apache Iceberg', icon: '🧊', version: '1.6.1', status: 'healthy', category: 'Table Format', layer: 'L3-Data', cpu: '-', memory: '-' }, style: nodeStyle('#22d3ee') },
+  { id: 'trino', position: { x: 650, y: layerY['L3-Data'] }, data: { label: 'Trino', icon: '🔎', version: '460', status: 'healthy', category: 'SQL Engine', layer: 'L3-Data', cpu: '4', memory: '16Gi', replicas: 6 }, style: nodeStyle('#38bdf8') },
 
   // L4 - App
   { id: 'airflow', position: { x: 200, y: layerY['L4-App'] }, data: { label: 'Apache Airflow', icon: '🌊', version: '2.10.2', status: 'healthy', category: 'Orchestration', layer: 'L4-App', cpu: '1', memory: '2Gi', replicas: 2 }, style: nodeStyle('#22d3ee') },
-  { id: 'jupyterhub', position: { x: 480, y: layerY['L4-App'] }, data: { label: 'JupyterHub', icon: '📓', version: '4.1.5', status: 'healthy', category: 'Notebook', layer: 'L4-App', cpu: '500m', memory: '1Gi', replicas: 1 }, style: nodeStyle('#fbbf24') },
+  { id: 'jupyterhub', position: { x: 530, y: layerY['L4-App'] }, data: { label: 'JupyterHub', icon: '📓', version: '4.1.5', status: 'healthy', category: 'Notebook', layer: 'L4-App', cpu: '500m', memory: '1Gi', replicas: 1 }, style: nodeStyle('#fbbf24') },
 ];
 
 export const topologyEdges: Edge[] = [
   // Spark dependencies
-  { id: 'e-spark-minio', source: 'spark', target: 'minio', type: 'smoothstep', animated: true, style: { stroke: '#a78bfa44' } },
-  { id: 'e-spark-hive', source: 'spark', target: 'hive-metastore', type: 'smoothstep', animated: true, style: { stroke: '#a78bfa44' } },
-  { id: 'e-spark-iceberg', source: 'spark', target: 'iceberg', type: 'smoothstep', style: { stroke: '#a78bfa44' } },
+  { id: 'e-spark-minio', source: 'spark', target: 'minio', type: 'smoothstep', animated: true, style: { stroke: '#a78bfa66' } },
+  { id: 'e-spark-hive', source: 'spark', target: 'hive-metastore', type: 'smoothstep', animated: true, style: { stroke: '#a78bfa66' } },
+  { id: 'e-spark-iceberg', source: 'spark', target: 'iceberg', type: 'smoothstep', style: { stroke: '#a78bfa66' } },
 
   // Iceberg dependencies
-  { id: 'e-iceberg-minio', source: 'iceberg', target: 'minio', type: 'smoothstep', style: { stroke: '#22d3ee44' } },
-  { id: 'e-iceberg-hive', source: 'iceberg', target: 'hive-metastore', type: 'smoothstep', style: { stroke: '#22d3ee44' } },
+  { id: 'e-iceberg-minio', source: 'iceberg', target: 'minio', type: 'smoothstep', style: { stroke: '#22d3ee66' } },
+  { id: 'e-iceberg-hive', source: 'iceberg', target: 'hive-metastore', type: 'smoothstep', style: { stroke: '#22d3ee66' } },
 
   // Trino
-  { id: 'e-trino-hive', source: 'trino', target: 'hive-metastore', type: 'smoothstep', style: { stroke: '#38bdf844' } },
-  { id: 'e-trino-minio', source: 'trino', target: 'minio', type: 'smoothstep', style: { stroke: '#38bdf844' } },
+  { id: 'e-trino-hive', source: 'trino', target: 'hive-metastore', type: 'smoothstep', style: { stroke: '#38bdf866' } },
+  { id: 'e-trino-minio', source: 'trino', target: 'minio', type: 'smoothstep', style: { stroke: '#38bdf866' } },
 
   // Hive -> PostgreSQL
-  { id: 'e-hive-pg', source: 'hive-metastore', target: 'postgresql', type: 'smoothstep', style: { stroke: '#fbbf2444' } },
+  { id: 'e-hive-pg', source: 'hive-metastore', target: 'postgresql', type: 'smoothstep', style: { stroke: '#fbbf2466' } },
 
   // Monitoring
-  { id: 'e-prom-thanos', source: 'prometheus', target: 'thanos', type: 'smoothstep', animated: true, style: { stroke: '#f8717144' } },
-  { id: 'e-thanos-minio', source: 'thanos', target: 'minio', type: 'smoothstep', style: { stroke: '#f8717144' } },
-  { id: 'e-grafana-prom', source: 'grafana', target: 'prometheus', type: 'smoothstep', style: { stroke: '#fbbf2444' } },
-  { id: 'e-grafana-thanos', source: 'grafana', target: 'thanos', type: 'smoothstep', style: { stroke: '#fbbf2444' } },
+  { id: 'e-prom-thanos', source: 'prometheus', target: 'thanos', type: 'smoothstep', animated: true, style: { stroke: '#f8717166' } },
+  { id: 'e-thanos-minio', source: 'thanos', target: 'minio', type: 'smoothstep', style: { stroke: '#f8717166' } },
+  { id: 'e-grafana-prom', source: 'grafana', target: 'prometheus', type: 'smoothstep', style: { stroke: '#fbbf2466' } },
+  { id: 'e-grafana-thanos', source: 'grafana', target: 'thanos', type: 'smoothstep', style: { stroke: '#fbbf2466' } },
 
   // Airflow
-  { id: 'e-airflow-spark', source: 'airflow', target: 'spark', type: 'smoothstep', animated: true, style: { stroke: '#22d3ee44' } },
-  { id: 'e-airflow-pg', source: 'airflow', target: 'postgresql', type: 'smoothstep', style: { stroke: '#22d3ee44' } },
+  { id: 'e-airflow-spark', source: 'airflow', target: 'spark', type: 'smoothstep', animated: true, style: { stroke: '#22d3ee66' } },
+  { id: 'e-airflow-pg', source: 'airflow', target: 'postgresql', type: 'smoothstep', style: { stroke: '#22d3ee66' } },
 
   // Jupyter
-  { id: 'e-jupyter-spark', source: 'jupyterhub', target: 'spark', type: 'smoothstep', style: { stroke: '#fbbf2444' } },
-  { id: 'e-jupyter-trino', source: 'jupyterhub', target: 'trino', type: 'smoothstep', style: { stroke: '#fbbf2444' } },
-];
-
-export const layerLabels = [
-  { label: 'L0 — Infrastructure', y: layerY['L0-Infra'] - 30, color: '#64748b' },
-  { label: 'L1 — Storage & Data', y: layerY['L1-Storage'] - 30, color: '#64748b' },
-  { label: 'L2 — Monitoring & Logging', y: layerY['L2-Platform'] - 30, color: '#64748b' },
-  { label: 'L3 — Data Processing', y: layerY['L3-Data'] - 30, color: '#64748b' },
-  { label: 'L4 — Applications', y: layerY['L4-App'] - 30, color: '#64748b' },
+  { id: 'e-jupyter-spark', source: 'jupyterhub', target: 'spark', type: 'smoothstep', style: { stroke: '#fbbf2466' } },
+  { id: 'e-jupyter-trino', source: 'jupyterhub', target: 'trino', type: 'smoothstep', style: { stroke: '#fbbf2466' } },
 ];

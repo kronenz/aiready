@@ -8,15 +8,31 @@ import {
   useNodesState,
   useEdgesState,
   type Node,
+  type NodeProps,
 } from '@xyflow/react';
 import { Flex, Box, Text, Card, Heading, Separator, IconButton } from '@radix-ui/themes';
 import { CheckCircle, AlertTriangle, Layers, X } from 'lucide-react';
-import { topologyNodes, topologyEdges, layerLabels, type TopoNodeData } from '../../data/topology';
+import { topologyNodes, topologyEdges, type TopoNodeData } from '../../data/topology';
 import { sampleDesignChat } from '../../data/agents';
 import { ChatPanel } from '../shared/ChatPanel';
 import { TopoNode } from '../shared/TopoNode';
 
-const nodeTypes = { default: TopoNode };
+/* Layer label node — rendered inside the canvas so it zooms/pans with the graph */
+function LayerLabelNode({ data }: NodeProps) {
+  const d = data as TopoNodeData;
+  return (
+    <div style={{ pointerEvents: 'none', userSelect: 'none' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+        <Layers size={10} style={{ color: 'var(--color-text-muted)' }} />
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: 'var(--color-text-muted)', whiteSpace: 'nowrap' }}>
+          {d.label}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+const nodeTypes = { default: TopoNode, layerLabel: LayerLabelNode };
 
 export function DesignStudioView() {
   const [nodes, , onNodesChange] = useNodesState(topologyNodes);
@@ -24,23 +40,24 @@ export function DesignStudioView() {
   const [selected, setSelected] = useState<TopoNodeData | null>(null);
 
   const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
+    if (node.type === 'layerLabel') return;
     setSelected(node.data as TopoNodeData);
   }, []);
 
   const validations = useMemo(() => [
     { type: 'pass', msg: 'Spark ↔ Iceberg 호환성 확인 (>=1.4.0)' },
     { type: 'pass', msg: 'Hive Metastore → PostgreSQL 연결 OK' },
-    { type: 'warn', msg: 'Hive Metastore 3.1.3 — EOL 예정, 4.0 마이그레이션 권장' },
+    { type: 'warn', msg: 'Hive Metastore 3.1.3 — EOL 예정, 4.0 권장' },
     { type: 'pass', msg: '50노드 규모 → Thanos 자동 추가 완료' },
     { type: 'pass', msg: 'ArgoCD Sync Wave 순서 검증 OK' },
   ], []);
 
   return (
-    <Flex className="h-full">
+    <Flex className="h-full" style={{ minWidth: 0 }}>
       {/* Chat Panel */}
-      <Flex direction="column" className="w-[340px] shrink-0" style={{ background: 'var(--color-bg-secondary)', borderRight: '1px solid var(--color-border)' }}>
+      <Flex direction="column" className="w-[340px] shrink-0" style={{ background: 'var(--color-bg-secondary)', borderRight: '1px solid var(--color-border)', minWidth: 0 }}>
         <Box px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)' }}>
-          <Heading size="2" style={{ color: 'var(--color-text-primary)' }}>💬 설계 대화</Heading>
+          <Heading size="2" style={{ color: 'var(--color-text-primary)' }}>설계 대화</Heading>
           <Text size="1" style={{ color: 'var(--color-text-muted)' }}>자연어로 아키텍처를 설계하세요</Text>
         </Box>
         <ChatPanel
@@ -50,19 +67,7 @@ export function DesignStudioView() {
       </Flex>
 
       {/* Topology Canvas */}
-      <Box className="flex-1 relative">
-        {layerLabels.map((l) => (
-          <Box
-            key={l.label}
-            className="absolute left-3 z-10 pointer-events-none"
-            style={{ top: l.y + 78 }}
-          >
-            <Flex align="center" gap="1">
-              <Layers size={10} style={{ color: 'var(--color-text-muted)' }} />
-              <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9 }}>{l.label}</Text>
-            </Flex>
-          </Box>
-        ))}
+      <Box className="flex-1 relative" style={{ minWidth: 0 }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -79,6 +84,7 @@ export function DesignStudioView() {
           <MiniMap
             position="bottom-left"
             nodeColor={(n: Node) => {
+              if (n.type === 'layerLabel') return 'transparent';
               const d = n.data as TopoNodeData;
               if (d.status === 'error') return '#f87171';
               if (d.status === 'warning') return '#fbbf24';
@@ -89,7 +95,7 @@ export function DesignStudioView() {
         </ReactFlow>
 
         {/* Validation Panel */}
-        <Card size="1" variant="surface" className="absolute top-3 right-3 w-[270px] z-10" style={{ background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+        <Card size="1" variant="surface" className="absolute top-3 right-3 w-[270px]" style={{ zIndex: 20, background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
           <Flex align="center" gap="2" mb="2">
             <CheckCircle size={13} style={{ color: 'var(--color-accent-green)' }} />
             <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Validation</Text>
@@ -111,11 +117,9 @@ export function DesignStudioView() {
 
         {/* Component Inspector */}
         {selected && (
-          <Card size="2" variant="surface" className="absolute bottom-16 right-3 w-[270px] z-10 anim-fade" style={{ background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+          <Card size="2" variant="surface" className="absolute bottom-16 right-3 w-[270px] anim-fade" style={{ zIndex: 20, background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
             <Flex align="center" justify="between" mb="2">
-              <Flex align="center" gap="2">
-                <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Component Inspector</Text>
-              </Flex>
+              <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Component Inspector</Text>
               <IconButton size="1" variant="ghost" color="gray" onClick={() => setSelected(null)}>
                 <X size={12} />
               </IconButton>

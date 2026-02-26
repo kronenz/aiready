@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Badge, Tooltip, Separator, ScrollArea } from '@radix-ui/themes';
+import { Box, Flex, Text, Badge, Separator, ScrollArea } from '@radix-ui/themes';
 import { Brain, Compass, Rocket, Settings, Bot, LayoutGrid } from 'lucide-react';
 
 export type ViewId = 'design' | 'ontology' | 'provision' | 'ops' | 'agent';
@@ -40,50 +40,49 @@ export function Sidebar({ active, onChange }: SidebarProps) {
           {navItems.map((item) => {
             const isActive = active === item.id;
             return (
-              <Tooltip key={item.id} content={item.label} side="right">
-                <button
-                  onClick={() => onChange(item.id)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                    padding: '10px 12px',
-                    borderRadius: 10,
-                    border: 'none',
-                    cursor: 'pointer',
-                    width: '100%',
-                    textAlign: 'left',
-                    transition: 'all 0.2s',
-                    background: isActive ? 'rgba(167,139,250,0.12)' : 'transparent',
-                    color: isActive ? 'var(--color-accent-purple)' : 'var(--color-text-secondary)',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = 'rgba(30,41,59,0.5)';
-                      e.currentTarget.style.color = 'var(--color-text-primary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.color = 'var(--color-text-secondary)';
-                    }
-                  }}
-                >
-                  <item.icon size={16} strokeWidth={isActive ? 2.5 : 1.8} />
-                  <span style={{ flex: 1, fontSize: 12, fontWeight: 600 }}>{item.label}</span>
-                  {item.loop && (
-                    <Badge
-                      size="1"
-                      variant={isActive ? 'solid' : 'surface'}
-                      color={isActive ? 'violet' : 'gray'}
-                      style={{ fontSize: 8, fontFamily: "'JetBrains Mono', monospace" }}
-                    >
-                      {item.loop}
-                    </Badge>
-                  )}
-                </button>
-              </Tooltip>
+              <button
+                key={item.id}
+                onClick={() => onChange(item.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '10px 12px',
+                  borderRadius: 10,
+                  border: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
+                  textAlign: 'left',
+                  transition: 'all 0.2s',
+                  background: isActive ? 'rgba(167,139,250,0.12)' : 'transparent',
+                  color: isActive ? 'var(--color-accent-purple)' : 'var(--color-text-secondary)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'rgba(30,41,59,0.5)';
+                    e.currentTarget.style.color = 'var(--color-text-primary)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--color-text-secondary)';
+                  }
+                }}
+              >
+                <item.icon size={16} strokeWidth={isActive ? 2.5 : 1.8} />
+                <span style={{ flex: 1, fontSize: 12, fontWeight: 600 }}>{item.label}</span>
+                {item.loop && (
+                  <Badge
+                    size="1"
+                    variant={isActive ? 'solid' : 'surface'}
+                    color={isActive ? 'violet' : 'gray'}
+                    style={{ fontSize: 8, fontFamily: "'JetBrains Mono', monospace" }}
+                  >
+                    {item.loop}
+                  </Badge>
+                )}
+              </button>
             );
           })}
         </Flex>

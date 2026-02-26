@@ -20,39 +20,39 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
   };
 
   return (
-    <Flex direction="column" className="h-full">
+    <Flex direction="column" className="h-full" style={{ minWidth: 0 }}>
       {/* Messages */}
       <ScrollArea scrollbars="vertical" className="flex-1">
-        <Flex direction="column" gap="3" px="4" py="3">
+        <Flex direction="column" gap="3" px="4" py="3" style={{ minWidth: 0 }}>
           {messages.map((msg) => (
-            <Box key={msg.id} className="anim-fade">
+            <Box key={msg.id} className="anim-fade" style={{ minWidth: 0 }}>
               {msg.role === 'user' && (
-                <Flex justify="end">
-                  <Card size="1" variant="surface" style={{ maxWidth: '85%', background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '14px 14px 4px 14px' }}>
-                    <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{msg.content}</Text>
+                <Flex justify="end" style={{ minWidth: 0 }}>
+                  <Card size="1" variant="surface" style={{ maxWidth: '85%', minWidth: 0, background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '14px 14px 4px 14px', overflow: 'hidden' }}>
+                    <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{msg.content}</Text>
                     <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block', textAlign: 'right', marginTop: 4 }}>{msg.timestamp}</Text>
                   </Card>
                 </Flex>
               )}
 
               {msg.role === 'tool' && (
-                <Box ml="1">
-                  <Flex align="center" gap="1" mb="1">
-                    <Wrench size={10} style={{ color: 'var(--color-accent-cyan)' }} />
-                    <Code size="1" color="cyan" variant="ghost" style={{ fontSize: 9 }}>{msg.toolName}</Code>
+                <Box style={{ minWidth: 0 }} ml="1">
+                  <Flex align="center" gap="1" mb="1" style={{ minWidth: 0 }}>
+                    <Wrench size={10} style={{ color: 'var(--color-accent-cyan)', flexShrink: 0 }} />
+                    <Code size="1" color="cyan" variant="ghost" style={{ fontSize: 9, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', minWidth: 0 }}>{msg.toolName}</Code>
                   </Flex>
                   {msg.toolResult && (
-                    <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
-                      <Text size="1" className="font-mono" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: 10 }}>{msg.toolResult}</Text>
+                    <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', overflow: 'hidden', minWidth: 0 }}>
+                      <Text size="1" className="font-mono" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: 1.7, fontSize: 10 }}>{msg.toolResult}</Text>
                     </Card>
                   )}
                 </Box>
               )}
 
               {msg.role === 'assistant' && (
-                <Flex justify="start">
-                  <Card size="1" variant="surface" style={{ maxWidth: '90%', background: 'rgba(17,24,39,0.5)', border: '1px solid var(--color-border)', borderRadius: '14px 14px 14px 4px' }}>
-                    <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{msg.content}</Text>
+                <Flex justify="start" style={{ minWidth: 0 }}>
+                  <Card size="1" variant="surface" style={{ maxWidth: '90%', minWidth: 0, background: 'rgba(17,24,39,0.5)', border: '1px solid var(--color-border)', borderRadius: '14px 14px 14px 4px', overflow: 'hidden' }}>
+                    <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{msg.content}</Text>
                     <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block', marginTop: 4 }}>{msg.timestamp}</Text>
                   </Card>
                 </Flex>
@@ -65,7 +65,7 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
       {/* Input */}
       <Box px="3" py="3" style={{ borderTop: '1px solid var(--color-border)' }}>
         <Flex align="center" gap="2">
-          <Box className="flex-1">
+          <Box className="flex-1" style={{ minWidth: 0 }}>
             <TextField.Root
               size="2"
               variant="surface"
@@ -76,7 +76,7 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
               radius="large"
             />
           </Box>
-          <IconButton size="2" variant="soft" color="violet" radius="large" onClick={handleSend}>
+          <IconButton size="2" variant="soft" color="violet" radius="large" onClick={handleSend} style={{ flexShrink: 0 }}>
             <Send size={14} />
           </IconButton>
         </Flex>
