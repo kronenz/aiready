@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Flex, Box, Text, Card, IconButton, ScrollArea, TextField, Code } from '@radix-ui/themes';
 import { Send, Wrench } from 'lucide-react';
 import type { ChatMessage } from '../../data/agents';
 
@@ -19,64 +20,67 @@ export function ChatPanel({ messages, placeholder = '메시지를 입력하세�
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <Flex direction="column" className="h-full">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-        {messages.map((msg) => (
-          <div key={msg.id} className="anim-fade">
-            {msg.role === 'user' && (
-              <div className="flex justify-end">
-                <div className="max-w-[85%] bg-accent-purple/15 border border-accent-purple/20 rounded-xl rounded-br-sm px-3.5 py-2.5">
-                  <div className="text-[12px] text-text-primary leading-relaxed whitespace-pre-wrap">{msg.content}</div>
-                  <div className="text-[9px] text-text-muted mt-1 font-mono text-right">{msg.timestamp}</div>
-                </div>
-              </div>
-            )}
+      <ScrollArea scrollbars="vertical" className="flex-1">
+        <Flex direction="column" gap="3" px="4" py="3">
+          {messages.map((msg) => (
+            <Box key={msg.id} className="anim-fade">
+              {msg.role === 'user' && (
+                <Flex justify="end">
+                  <Card size="1" variant="surface" style={{ maxWidth: '85%', background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '14px 14px 4px 14px' }}>
+                    <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{msg.content}</Text>
+                    <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block', textAlign: 'right', marginTop: 4 }}>{msg.timestamp}</Text>
+                  </Card>
+                </Flex>
+              )}
 
-            {msg.role === 'tool' && (
-              <div className="ml-1">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Wrench size={10} className="text-accent-cyan" />
-                  <span className="text-[9px] font-mono text-accent-cyan">{msg.toolName}</span>
-                </div>
-                {msg.toolResult && (
-                  <div className="bg-bg-primary border border-border rounded-lg px-3 py-2 text-[10px] font-mono text-text-secondary whitespace-pre-wrap leading-relaxed">
-                    {msg.toolResult}
-                  </div>
-                )}
-              </div>
-            )}
+              {msg.role === 'tool' && (
+                <Box ml="1">
+                  <Flex align="center" gap="1" mb="1">
+                    <Wrench size={10} style={{ color: 'var(--color-accent-cyan)' }} />
+                    <Code size="1" color="cyan" variant="ghost" style={{ fontSize: 9 }}>{msg.toolName}</Code>
+                  </Flex>
+                  {msg.toolResult && (
+                    <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                      <Text size="1" className="font-mono" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: 10 }}>{msg.toolResult}</Text>
+                    </Card>
+                  )}
+                </Box>
+              )}
 
-            {msg.role === 'assistant' && (
-              <div className="flex justify-start">
-                <div className="max-w-[90%] bg-bg-tertiary/50 border border-border rounded-xl rounded-bl-sm px-3.5 py-2.5">
-                  <div className="text-[12px] text-text-primary leading-relaxed whitespace-pre-wrap">{msg.content}</div>
-                  <div className="text-[9px] text-text-muted mt-1 font-mono">{msg.timestamp}</div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+              {msg.role === 'assistant' && (
+                <Flex justify="start">
+                  <Card size="1" variant="surface" style={{ maxWidth: '90%', background: 'rgba(17,24,39,0.5)', border: '1px solid var(--color-border)', borderRadius: '14px 14px 14px 4px' }}>
+                    <Text size="1" style={{ color: 'var(--color-text-primary)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{msg.content}</Text>
+                    <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9, display: 'block', marginTop: 4 }}>{msg.timestamp}</Text>
+                  </Card>
+                </Flex>
+              )}
+            </Box>
+          ))}
+        </Flex>
+      </ScrollArea>
 
       {/* Input */}
-      <div className="px-3 py-2.5 border-t border-border">
-        <div className="flex items-center gap-2 bg-bg-primary border border-border rounded-xl px-3 py-2 focus-within:border-accent-purple/50 transition-colors">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            placeholder={placeholder}
-            className="flex-1 bg-transparent text-[12px] text-text-primary placeholder:text-text-muted outline-none"
-          />
-          <button
-            onClick={handleSend}
-            className="p-1.5 rounded-lg bg-accent-purple/20 text-accent-purple hover:bg-accent-purple/30 transition-colors"
-          >
-            <Send size={13} />
-          </button>
-        </div>
-      </div>
-    </div>
+      <Box px="3" py="3" style={{ borderTop: '1px solid var(--color-border)' }}>
+        <Flex align="center" gap="2">
+          <Box className="flex-1">
+            <TextField.Root
+              size="2"
+              variant="surface"
+              placeholder={placeholder}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              radius="large"
+            />
+          </Box>
+          <IconButton size="2" variant="soft" color="violet" radius="large" onClick={handleSend}>
+            <Send size={14} />
+          </IconButton>
+        </Flex>
+      </Box>
+    </Flex>
   );
 }

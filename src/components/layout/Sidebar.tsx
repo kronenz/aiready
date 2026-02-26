@@ -1,3 +1,4 @@
+import { Box, Flex, Text, Badge, Tooltip, Separator, ScrollArea } from '@radix-ui/themes';
 import { Brain, Compass, Rocket, Settings, Bot, LayoutGrid } from 'lucide-react';
 
 export type ViewId = 'design' | 'ontology' | 'provision' | 'ops' | 'agent';
@@ -7,66 +8,97 @@ interface SidebarProps {
   onChange: (v: ViewId) => void;
 }
 
-const navItems: { id: ViewId; icon: typeof Brain; label: string; badge?: string }[] = [
-  { id: 'design', icon: Compass, label: 'Design Studio', badge: '①' },
-  { id: 'ontology', icon: Brain, label: 'Ontology', badge: '🧬' },
-  { id: 'provision', icon: Rocket, label: 'Provisioning', badge: '②' },
-  { id: 'ops', icon: Settings, label: 'Operations', badge: '③' },
-  { id: 'agent', icon: Bot, label: 'AI Agent', badge: '④' },
+const navItems: { id: ViewId; icon: typeof Brain; label: string; loop?: string }[] = [
+  { id: 'design', icon: Compass, label: 'Design Studio', loop: 'LOOP 1' },
+  { id: 'ontology', icon: Brain, label: 'Ontology', loop: 'CORE' },
+  { id: 'provision', icon: Rocket, label: 'Provisioning', loop: 'LOOP 2' },
+  { id: 'ops', icon: Settings, label: 'Operations', loop: 'LOOP 3' },
+  { id: 'agent', icon: Bot, label: 'AI Agent', loop: 'LOOP 4' },
 ];
 
 export function Sidebar({ active, onChange }: SidebarProps) {
   return (
-    <div className="w-[220px] shrink-0 bg-bg-secondary border-r border-border flex flex-col h-full">
+    <Flex direction="column" className="w-[224px] shrink-0 h-full" style={{ background: 'var(--color-bg-secondary)', borderRight: '1px solid var(--color-border)' }}>
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-border">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center">
-            <LayoutGrid size={16} className="text-white" />
-          </div>
-          <div>
-            <div className="text-[15px] font-extrabold text-text-primary tracking-tight">KubeForge</div>
-            <div className="text-[9px] font-mono text-text-muted tracking-wider">SOLUTION PLATFORM</div>
-          </div>
-        </div>
-      </div>
+      <Box px="4" py="4">
+        <Flex align="center" gap="3">
+          <Flex align="center" justify="center" className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-purple to-accent-blue shrink-0">
+            <LayoutGrid size={17} color="white" />
+          </Flex>
+          <Box>
+            <Text size="3" weight="bold" className="tracking-tight" style={{ color: 'var(--color-text-primary)' }}>KubeForge</Text>
+            <Text size="1" className="font-mono block" style={{ color: 'var(--color-text-muted)', letterSpacing: '0.1em', fontSize: 9 }}>SOLUTION PLATFORM</Text>
+          </Box>
+        </Flex>
+      </Box>
+
+      <Separator size="4" style={{ background: 'var(--color-border)' }} />
 
       {/* Nav */}
-      <nav className="flex-1 py-3 px-2.5 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = active === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onChange(item.id)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all text-[12px] font-semibold ${
-                isActive
-                  ? 'bg-accent-purple/15 text-accent-purple'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover/50'
-              }`}
-            >
-              <item.icon size={16} strokeWidth={isActive ? 2.5 : 2} />
-              <span className="flex-1">{item.label}</span>
-              {item.badge && (
-                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
-                  isActive ? 'bg-accent-purple/20 text-accent-purple' : 'bg-bg-hover text-text-muted'
-                }`}>
-                  {item.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
+      <ScrollArea scrollbars="vertical" className="flex-1">
+        <Flex direction="column" gap="1" p="3">
+          {navItems.map((item) => {
+            const isActive = active === item.id;
+            return (
+              <Tooltip key={item.id} content={item.label} side="right">
+                <button
+                  onClick={() => onChange(item.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    border: 'none',
+                    cursor: 'pointer',
+                    width: '100%',
+                    textAlign: 'left',
+                    transition: 'all 0.2s',
+                    background: isActive ? 'rgba(167,139,250,0.12)' : 'transparent',
+                    color: isActive ? 'var(--color-accent-purple)' : 'var(--color-text-secondary)',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'rgba(30,41,59,0.5)';
+                      e.currentTarget.style.color = 'var(--color-text-primary)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = 'var(--color-text-secondary)';
+                    }
+                  }}
+                >
+                  <item.icon size={16} strokeWidth={isActive ? 2.5 : 1.8} />
+                  <span style={{ flex: 1, fontSize: 12, fontWeight: 600 }}>{item.label}</span>
+                  {item.loop && (
+                    <Badge
+                      size="1"
+                      variant={isActive ? 'solid' : 'surface'}
+                      color={isActive ? 'violet' : 'gray'}
+                      style={{ fontSize: 8, fontFamily: "'JetBrains Mono', monospace" }}
+                    >
+                      {item.loop}
+                    </Badge>
+                  )}
+                </button>
+              </Tooltip>
+            );
+          })}
+        </Flex>
+      </ScrollArea>
 
-      {/* Status */}
-      <div className="px-4 py-3 border-t border-border">
-        <div className="flex items-center gap-2 text-[10px] text-text-muted">
-          <div className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
-          <span className="font-mono">prod-cluster-01</span>
-        </div>
-        <div className="text-[9px] text-text-muted mt-1 font-mono">15 components · 50 nodes</div>
-      </div>
-    </div>
+      <Separator size="4" style={{ background: 'var(--color-border)' }} />
+
+      {/* Cluster Status */}
+      <Box px="4" py="3">
+        <Flex align="center" gap="2" mb="1">
+          <Box className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
+          <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)' }}>prod-cluster-01</Text>
+        </Flex>
+        <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9 }}>15 components · 50 nodes</Text>
+      </Box>
+    </Flex>
   );
 }

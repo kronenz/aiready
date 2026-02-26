@@ -24,6 +24,16 @@
   --color-border-hover: #334155;
 }
 
+/* Radix Theme overrides for our dark palette */
+.radix-themes {
+  --color-background: #06090f;
+  --color-panel-solid: #0c1018;
+  --color-panel-translucent: rgba(12,16,24,0.85);
+  --color-surface: #111827;
+  --color-overlay: rgba(0,0,0,0.6);
+  height: 100vh;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -84,8 +94,3 @@ body {
   50% { box-shadow: 0 0 14px rgba(167,139,250,0.5); }
 }
 .pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
-
-@keyframes progressBar {
-  from { width: 0%; }
-  to { width: var(--progress); }
-}

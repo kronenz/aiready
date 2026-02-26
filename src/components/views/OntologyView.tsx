@@ -9,13 +9,13 @@ import {
   type Node,
   type Edge,
 } from '@xyflow/react';
+import { Flex, Box, Text, Card, Heading, Code, ScrollArea } from '@radix-ui/themes';
 import { Database, ArrowRightLeft, Search, Zap } from 'lucide-react';
 import { TopoNode } from '../shared/TopoNode';
 import type { TopoNodeData } from '../../data/topology';
 
 const nodeTypes = { default: TopoNode };
 
-// Ontology-specific graph: shows component relationships
 const ontoNodes: Node<TopoNodeData>[] = [
   { id: 'spark', position: { x: 300, y: 40 }, data: { label: 'Apache Spark', icon: '✨', version: '3.5.3', status: 'healthy', category: 'BatchProcessor', layer: 'provides: SparkSubmit, StructuredStreaming' } },
   { id: 'iceberg', position: { x: 80, y: 180 }, data: { label: 'Apache Iceberg', icon: '🧊', version: '1.6.1', status: 'healthy', category: 'TableFormat', layer: 'provides: IcebergCatalog' } },
@@ -47,15 +47,22 @@ const queryExamples = [
   { q: 'Spark 3.6.0 업그레이드 경로', endpoint: 'POST /api/v1/upgrade-path' },
 ];
 
+const queryResults = [
+  `{\n  "component": "spark",\n  "dependencies": [\n    {"component":"minio","type":"hard","interface":"S3API"},\n    {"component":"hive-metastore","type":"hard","interface":"HiveMetastoreThrift"},\n    {"component":"spark-operator","type":"hard"},\n    {"component":"postgresql","type":"transitive","via":"hive-metastore"}\n  ]\n}`,
+  `{\n  "compatible": true,\n  "current": {"iceberg":"1.6.1","spark":"3.5.3"},\n  "target": {"iceberg":"1.7.0"},\n  "warnings": [\n    "hive-metastore 스키마 마이그레이션 필요",\n    "spark image rebuild 권장"\n  ]\n}`,
+  `{\n  "component": "minio",\n  "impact_chain": [\n    {"component":"spark","severity":"critical","reason":"checkpoint & data storage"},\n    {"component":"iceberg","severity":"critical","reason":"storage backend"},\n    {"component":"trino","severity":"high","reason":"data read path"},\n    {"component":"thanos","severity":"high","reason":"metrics storage"}\n  ],\n  "total_affected": 4\n}`,
+  `{\n  "steps": [\n    {"order":1,"action":"upgrade","component":"iceberg","to":"1.7.0"},\n    {"order":2,"action":"migrate","component":"hive-metastore","script":"schema-upgrade.sql"},\n    {"order":3,"action":"rebuild","component":"spark-image","tag":"3.6.0-iceberg1.7"},\n    {"order":4,"action":"upgrade","component":"spark","to":"3.6.0"},\n    {"order":5,"action":"verify","component":"trino","check":"catalog reconnect"}\n  ],\n  "estimated_downtime": "15min"\n}`,
+];
+
 export function OntologyView() {
   const [nodes, , onNodesChange] = useNodesState(ontoNodes);
   const [edges, , onEdgesChange] = useEdgesState(ontoEdges);
   const [selectedQuery, setSelectedQuery] = useState(0);
 
   return (
-    <div className="flex h-full">
+    <Flex className="h-full">
       {/* Graph */}
-      <div className="flex-1 relative">
+      <Box className="flex-1 relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -71,107 +78,73 @@ export function OntologyView() {
         </ReactFlow>
 
         {/* Legend */}
-        <div className="absolute top-3 left-3 bg-bg-secondary/95 backdrop-blur-sm border border-border rounded-xl p-3 z-10">
-          <div className="text-[11px] font-bold text-text-primary mb-2 flex items-center gap-1.5">
-            <Database size={12} className="text-accent-purple" />
-            Ontology Graph — 관계 범례
-          </div>
-          <div className="space-y-1.5">
+        <Card size="1" variant="surface" className="absolute top-3 left-3 z-10" style={{ background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+          <Flex align="center" gap="2" mb="2">
+            <Database size={13} style={{ color: 'var(--color-accent-purple)' }} />
+            <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Ontology Graph — 관계 범례</Text>
+          </Flex>
+          <Flex direction="column" gap="2">
             <LegendItem color="#fbbf24" label="DEPENDS_ON (hard)" />
             <LegendItem color="#a78bfa" label="COMPATIBLE_WITH" />
             <LegendItem color="#4ade80" label="MANAGED_BY" />
             <LegendItem color="#f87171" label="CONFLICTS_WITH" dashed />
-          </div>
-        </div>
-      </div>
+          </Flex>
+        </Card>
+      </Box>
 
       {/* Query Panel */}
-      <div className="w-[320px] shrink-0 border-l border-border bg-bg-secondary flex flex-col">
-        <div className="px-4 py-3 border-b border-border">
-          <div className="text-[13px] font-bold text-text-primary flex items-center gap-2">
-            <Search size={14} className="text-accent-cyan" />
-            Ontology Query API
-          </div>
-          <div className="text-[10px] text-text-muted mt-0.5">온톨로지를 쿼리하여 의존성·호환성 탐색</div>
-        </div>
+      <Flex direction="column" className="w-[330px] shrink-0" style={{ background: 'var(--color-bg-secondary)', borderLeft: '1px solid var(--color-border)' }}>
+        <Box px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)' }}>
+          <Flex align="center" gap="2">
+            <Search size={14} style={{ color: 'var(--color-accent-cyan)' }} />
+            <Heading size="2" style={{ color: 'var(--color-text-primary)' }}>Ontology Query API</Heading>
+          </Flex>
+          <Text size="1" style={{ color: 'var(--color-text-muted)' }}>온톨로지를 쿼리하여 의존성·호환성 탐색</Text>
+        </Box>
 
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
-          {queryExamples.map((q, i) => (
-            <button
-              key={i}
-              onClick={() => setSelectedQuery(i)}
-              className={`w-full text-left p-3 rounded-lg border transition-all ${
-                selectedQuery === i
-                  ? 'bg-accent-purple/10 border-accent-purple/30'
-                  : 'bg-bg-primary border-border hover:border-border-hover'
-              }`}
-            >
-              <div className="text-[11px] font-semibold text-text-primary">{q.q}</div>
-              <div className="text-[9px] font-mono text-accent-cyan mt-1 flex items-center gap-1">
-                <Zap size={8} /> {q.endpoint}
-              </div>
-            </button>
-          ))}
-        </div>
+        <ScrollArea scrollbars="vertical" className="flex-1">
+          <Flex direction="column" gap="2" p="3">
+            {queryExamples.map((q, i) => (
+              <Card
+                key={i}
+                size="1"
+                variant={selectedQuery === i ? 'classic' : 'surface'}
+                onClick={() => setSelectedQuery(i)}
+                style={{
+                  cursor: 'pointer',
+                  background: selectedQuery === i ? 'rgba(167,139,250,0.08)' : 'var(--color-bg-primary)',
+                  border: `1px solid ${selectedQuery === i ? 'rgba(167,139,250,0.3)' : 'var(--color-border)'}`,
+                }}
+              >
+                <Text size="1" weight="medium" style={{ color: 'var(--color-text-primary)' }}>{q.q}</Text>
+                <Flex align="center" gap="1" mt="1">
+                  <Zap size={8} style={{ color: 'var(--color-accent-cyan)' }} />
+                  <Code size="1" color="cyan" variant="ghost" style={{ fontSize: 9 }}>{q.endpoint}</Code>
+                </Flex>
+              </Card>
+            ))}
+          </Flex>
+        </ScrollArea>
 
-        {/* Query Result */}
-        <div className="border-t border-border p-3">
-          <div className="text-[10px] font-mono text-text-muted mb-1.5">Response</div>
-          <div className="bg-bg-primary border border-border rounded-lg p-3 text-[10px] font-mono text-text-secondary max-h-[200px] overflow-y-auto whitespace-pre-wrap leading-relaxed">
-            {selectedQuery === 0 && `{
-  "component": "spark",
-  "dependencies": [
-    {"component":"minio","type":"hard","interface":"S3API"},
-    {"component":"hive-metastore","type":"hard","interface":"HiveMetastoreThrift"},
-    {"component":"spark-operator","type":"hard"},
-    {"component":"postgresql","type":"transitive","via":"hive-metastore"}
-  ]
-}`}
-            {selectedQuery === 1 && `{
-  "compatible": true,
-  "current": {"iceberg":"1.6.1","spark":"3.5.3"},
-  "target": {"iceberg":"1.7.0"},
-  "warnings": [
-    "hive-metastore 스키마 마이그레이션 필요",
-    "spark image rebuild 권장"
-  ]
-}`}
-            {selectedQuery === 2 && `{
-  "component": "minio",
-  "impact_chain": [
-    {"component":"spark","severity":"critical","reason":"checkpoint & data storage"},
-    {"component":"iceberg","severity":"critical","reason":"storage backend"},
-    {"component":"trino","severity":"high","reason":"data read path"},
-    {"component":"thanos","severity":"high","reason":"metrics storage"}
-  ],
-  "total_affected": 4
-}`}
-            {selectedQuery === 3 && `{
-  "steps": [
-    {"order":1,"action":"upgrade","component":"iceberg","to":"1.7.0"},
-    {"order":2,"action":"migrate","component":"hive-metastore","script":"schema-upgrade.sql"},
-    {"order":3,"action":"rebuild","component":"spark-image","tag":"3.6.0-iceberg1.7"},
-    {"order":4,"action":"upgrade","component":"spark","to":"3.6.0"},
-    {"order":5,"action":"verify","component":"trino","check":"catalog reconnect"}
-  ],
-  "estimated_downtime": "15min"
-}`}
-          </div>
-        </div>
-      </div>
-    </div>
+        <Box p="3" style={{ borderTop: '1px solid var(--color-border)' }}>
+          <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', marginBottom: 6, display: 'block' }}>Response</Text>
+          <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', maxHeight: 200, overflow: 'auto' }}>
+            <Text size="1" className="font-mono" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: 10 }}>
+              {queryResults[selectedQuery]}
+            </Text>
+          </Card>
+        </Box>
+      </Flex>
+    </Flex>
   );
 }
 
 function LegendItem({ color, label, dashed }: { color: string; label: string; dashed?: boolean }) {
   return (
-    <div className="flex items-center gap-2 text-[9px] text-text-secondary">
-      <div className="w-6 h-0.5 rounded" style={{
-        background: dashed ? 'transparent' : color,
-        borderTop: dashed ? `2px dashed ${color}` : undefined,
-      }} />
+    <Flex align="center" gap="2">
+      <div style={{ width: 24, height: 2, borderRadius: 2, background: dashed ? 'transparent' : color, borderTop: dashed ? `2px dashed ${color}` : undefined }} />
       <ArrowRightLeft size={8} style={{ color }} />
-      <span>{label}</span>
-    </div>
+      <Text size="1" style={{ color: 'var(--color-text-secondary)', fontSize: 9 }}>{label}</Text>
+    </Flex>
   );
 }

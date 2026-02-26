@@ -1,25 +1,28 @@
+import { Flex, Box, Text, Card, Heading, Badge, Progress, ScrollArea, Code, Separator } from '@radix-ui/themes';
 import { CheckCircle, Circle, Loader2, AlertCircle, GitPullRequest, ArrowRight } from 'lucide-react';
 import { deployPipeline, argoApps } from '../../data/provisioning';
 
-const stageIcons = {
-  done: <CheckCircle size={16} className="text-accent-green" />,
-  active: <Loader2 size={16} className="text-accent-blue animate-spin" />,
-  pending: <Circle size={16} className="text-text-muted" />,
-  error: <AlertCircle size={16} className="text-accent-red" />,
+const stageIcons: Record<string, React.ReactNode> = {
+  done: <CheckCircle size={16} style={{ color: 'var(--color-accent-green)' }} />,
+  active: <Loader2 size={16} className="animate-spin" style={{ color: 'var(--color-accent-blue)' }} />,
+  pending: <Circle size={16} style={{ color: 'var(--color-text-muted)' }} />,
+  error: <AlertCircle size={16} style={{ color: 'var(--color-accent-red)' }} />,
 };
 
-const healthColors: Record<string, string> = {
-  Healthy: 'text-accent-green',
-  Progressing: 'text-accent-blue',
-  Degraded: 'text-accent-red',
-  Missing: 'text-text-muted',
+const healthDot: Record<string, string> = {
+  Healthy: '#4ade80',
+  Progressing: '#38bdf8',
+  Degraded: '#f87171',
+  Missing: '#64748b',
 };
 
-const syncColors: Record<string, string> = {
-  Synced: 'bg-accent-green/15 text-accent-green border-accent-green/30',
-  Progressing: 'bg-accent-blue/15 text-accent-blue border-accent-blue/30',
-  OutOfSync: 'bg-text-muted/15 text-text-muted border-text-muted/30',
+const syncBadgeColor: Record<string, 'green' | 'blue' | 'gray'> = {
+  Synced: 'green',
+  Progressing: 'blue',
+  OutOfSync: 'gray',
 };
+
+const waveLabels = ['Wave 0 — CRDs', 'Wave 1 — Operators', 'Wave 2 — Infrastructure', 'Wave 3 — Monitoring', 'Wave 4 — Data Platform'];
 
 export function ProvisioningView() {
   const completedApps = argoApps.filter(a => a.health === 'Healthy').length;
@@ -27,98 +30,94 @@ export function ProvisioningView() {
   const progress = Math.round((completedApps / totalApps) * 100);
 
   return (
-    <div className="h-full overflow-y-auto p-6 space-y-6">
-      {/* Pipeline */}
-      <div>
-        <div className="text-[15px] font-bold text-text-primary mb-4 flex items-center gap-2">
-          <GitPullRequest size={16} className="text-accent-blue" />
-          배포 파이프라인
-        </div>
-        <div className="flex items-stretch gap-0 overflow-x-auto pb-2">
-          {deployPipeline.map((stage, i) => (
-            <div key={stage.id} className="flex items-center">
-              <div className={`min-w-[170px] p-3 rounded-xl border transition-all ${
-                stage.status === 'active'
-                  ? 'bg-accent-blue/10 border-accent-blue/30'
-                  : stage.status === 'done'
-                    ? 'bg-bg-secondary border-border'
-                    : 'bg-bg-secondary/50 border-border/50'
-              }`}>
-                <div className="flex items-center gap-2 mb-1.5">
-                  {stageIcons[stage.status]}
-                  <span className="text-[11px] font-bold text-text-primary">{stage.label}</span>
-                </div>
-                <div className="text-[9px] text-text-secondary leading-relaxed">{stage.detail}</div>
-                {stage.time && (
-                  <div className="text-[8px] font-mono text-text-muted mt-1">{stage.time}</div>
+    <ScrollArea scrollbars="vertical" className="h-full">
+      <Flex direction="column" gap="5" p="5">
+
+        {/* Pipeline */}
+        <Box>
+          <Flex align="center" gap="2" mb="3">
+            <GitPullRequest size={16} style={{ color: 'var(--color-accent-blue)' }} />
+            <Heading size="3" style={{ color: 'var(--color-text-primary)' }}>배포 파이프라인</Heading>
+          </Flex>
+          <Flex align="stretch" gap="0" style={{ overflowX: 'auto', paddingBottom: 8 }}>
+            {deployPipeline.map((stage, i) => (
+              <Flex key={stage.id} align="center">
+                <Card
+                  size="1"
+                  variant="surface"
+                  style={{
+                    minWidth: 175,
+                    background: stage.status === 'active' ? 'rgba(56,189,248,0.08)' : 'var(--color-bg-secondary)',
+                    border: `1px solid ${stage.status === 'active' ? 'rgba(56,189,248,0.25)' : 'var(--color-border)'}`,
+                    opacity: stage.status === 'pending' ? 0.6 : 1,
+                  }}
+                >
+                  <Flex align="center" gap="2" mb="1">
+                    {stageIcons[stage.status]}
+                    <Text size="1" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{stage.label}</Text>
+                  </Flex>
+                  <Text size="1" style={{ color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>{stage.detail}</Text>
+                  {stage.time && (
+                    <Code size="1" variant="ghost" color="gray" style={{ fontSize: 8, marginTop: 4, display: 'block' }}>{stage.time}</Code>
+                  )}
+                </Card>
+                {i < deployPipeline.length - 1 && (
+                  <ArrowRight size={14} style={{ color: 'var(--color-text-muted)', margin: '0 6px', flexShrink: 0 }} />
                 )}
-              </div>
-              {i < deployPipeline.length - 1 && (
-                <ArrowRight size={14} className="mx-1.5 text-text-muted shrink-0" />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+              </Flex>
+            ))}
+          </Flex>
+        </Box>
 
-      {/* Progress */}
-      <div className="bg-bg-secondary border border-border rounded-xl p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[12px] font-bold text-text-primary">전체 배포 진행률</span>
-          <span className="text-[12px] font-mono font-bold text-accent-blue">{progress}%</span>
-        </div>
-        <div className="h-2 bg-bg-primary rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-accent-purple to-accent-blue rounded-full transition-all duration-1000"
-               style={{ width: `${progress}%` }} />
-        </div>
-        <div className="text-[10px] text-text-muted mt-1.5">
-          {completedApps}/{totalApps} Applications Synced · Wave 3/5 진행 중
-        </div>
-      </div>
+        {/* Progress */}
+        <Card size="2" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+          <Flex align="center" justify="between" mb="2">
+            <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>전체 배포 진행률</Text>
+            <Text size="2" weight="bold" className="font-mono" style={{ color: 'var(--color-accent-blue)' }}>{progress}%</Text>
+          </Flex>
+          <Progress value={progress} size="2" color="violet" />
+          <Text size="1" style={{ color: 'var(--color-text-muted)', marginTop: 6, display: 'block' }}>
+            {completedApps}/{totalApps} Applications Synced · Wave 3/5 진행 중
+          </Text>
+        </Card>
 
-      {/* ArgoCD Apps */}
-      <div>
-        <div className="text-[15px] font-bold text-text-primary mb-3">ArgoCD Applications</div>
-        <div className="grid grid-cols-1 gap-2">
-          {[0, 1, 2, 3, 4].map((wave) => {
-            const waveApps = argoApps.filter((a) => a.wave === wave);
-            const waveLabels = ['Wave 0 — CRDs', 'Wave 1 — Operators', 'Wave 2 — Infrastructure', 'Wave 3 — Monitoring', 'Wave 4 — Data Platform'];
-            return (
-              <div key={wave}>
-                <div className="text-[10px] font-mono font-bold text-text-muted mb-1.5 px-1">{waveLabels[wave]}</div>
-                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mb-3">
-                  {waveApps.map((app) => (
-                    <div key={app.name} className="bg-bg-secondary border border-border rounded-lg p-2.5 hover:border-border-hover transition-colors">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[11px] font-bold text-text-primary">{app.name}</span>
-                        <div className={`w-2 h-2 rounded-full ${
-                          app.health === 'Healthy' ? 'bg-accent-green' :
-                          app.health === 'Progressing' ? 'bg-accent-blue animate-pulse' :
-                          app.health === 'Degraded' ? 'bg-accent-red' : 'bg-text-muted'
-                        }`} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded border ${syncColors[app.status] || ''}`}>
-                          {app.status}
-                        </span>
-                        <span className={`text-[9px] font-mono ${healthColors[app.health] || ''}`}>
-                          {app.health}
-                        </span>
-                      </div>
-                      <div className="text-[8px] font-mono text-text-muted mt-1">ns: {app.namespace}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+        {/* ArgoCD Apps */}
+        <Box>
+          <Heading size="3" mb="3" style={{ color: 'var(--color-text-primary)' }}>ArgoCD Applications</Heading>
+          <Flex direction="column" gap="4">
+            {[0, 1, 2, 3, 4].map((wave) => {
+              const waveApps = argoApps.filter((a) => a.wave === wave);
+              return (
+                <Box key={wave}>
+                  <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-muted)', marginBottom: 8, display: 'block' }}>{waveLabels[wave]}</Text>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                    {waveApps.map((app) => (
+                      <Card key={app.name} size="1" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+                        <Flex align="center" justify="between" mb="1">
+                          <Text size="1" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{app.name}</Text>
+                          <Box className={app.health === 'Progressing' ? 'animate-pulse' : ''} style={{ width: 8, height: 8, borderRadius: '50%', background: healthDot[app.health] || '#64748b' }} />
+                        </Flex>
+                        <Flex align="center" gap="2">
+                          <Badge size="1" variant="soft" color={syncBadgeColor[app.status] || 'gray'} style={{ fontSize: 8 }}>{app.status}</Badge>
+                          <Text size="1" className="font-mono" style={{ color: healthDot[app.health], fontSize: 9 }}>{app.health}</Text>
+                        </Flex>
+                        <Code size="1" variant="ghost" color="gray" style={{ fontSize: 8, marginTop: 4, display: 'block' }}>ns: {app.namespace}</Code>
+                      </Card>
+                    ))}
+                  </div>
+                </Box>
+              );
+            })}
+          </Flex>
+        </Box>
 
-      {/* Generated Repo Structure */}
-      <div className="bg-bg-secondary border border-border rounded-xl p-4">
-        <div className="text-[12px] font-bold text-text-primary mb-2">생성된 Git Repo 구조</div>
-        <pre className="text-[10px] font-mono text-text-secondary leading-relaxed whitespace-pre">{`kubeforge-deploy/
+        <Separator size="4" style={{ background: 'var(--color-border)' }} />
+
+        {/* Generated Repo Structure */}
+        <Card size="2" variant="surface" style={{ background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)' }}>
+          <Text size="2" weight="bold" mb="2" style={{ color: 'var(--color-text-primary)', display: 'block' }}>생성된 Git Repo 구조</Text>
+          <Code size="2" variant="ghost" style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre', lineHeight: 1.8, fontSize: 10 }}>
+{`kubeforge-deploy/
 ├── clusters/prod-cluster-01/
 │   ├── argocd-root.yaml
 │   ├── values/
@@ -134,8 +133,10 @@ export function ProvisioningView() {
 │   │   └── wave-4-data.yaml
 │   └── secrets/
 │       └── external-secrets.yaml
-└── ontology/`}</pre>
-      </div>
-    </div>
+└── ontology/`}
+          </Code>
+        </Card>
+      </Flex>
+    </ScrollArea>
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Flex, Box, Text, Card, Heading, Badge, ScrollArea, Separator } from '@radix-ui/themes';
 import { Cpu, Wrench } from 'lucide-react';
 import { agentProfiles, sampleAgentChat } from '../../data/agents';
 import { ChatPanel } from '../shared/ChatPanel';
@@ -8,79 +9,85 @@ export function AgentView() {
   const agent = agentProfiles.find((a) => a.id === selectedAgent)!;
 
   return (
-    <div className="flex h-full">
+    <Flex className="h-full">
       {/* Agent Selector */}
-      <div className="w-[260px] shrink-0 border-r border-border bg-bg-secondary flex flex-col">
-        <div className="px-4 py-3 border-b border-border">
-          <div className="text-[13px] font-bold text-text-primary flex items-center gap-2">
-            <Cpu size={14} className="text-accent-pink" />
-            Agent Profiles
-          </div>
-          <div className="text-[10px] text-text-muted mt-0.5">kagent + MCP 기반 AI Agent</div>
-        </div>
+      <Flex direction="column" className="w-[270px] shrink-0" style={{ background: 'var(--color-bg-secondary)', borderRight: '1px solid var(--color-border)' }}>
+        <Box px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)' }}>
+          <Flex align="center" gap="2">
+            <Cpu size={14} style={{ color: 'var(--color-accent-pink)' }} />
+            <Heading size="2" style={{ color: 'var(--color-text-primary)' }}>Agent Profiles</Heading>
+          </Flex>
+          <Text size="1" style={{ color: 'var(--color-text-muted)' }}>kagent + MCP 기반 AI Agent</Text>
+        </Box>
 
-        <div className="flex-1 overflow-y-auto p-2.5 space-y-1.5">
-          {agentProfiles.map((a) => (
-            <button
-              key={a.id}
-              onClick={() => setSelectedAgent(a.id)}
-              className={`w-full text-left p-3 rounded-xl border transition-all ${
-                selectedAgent === a.id
-                  ? 'border-accent-purple/40 bg-accent-purple/10'
-                  : 'border-border bg-bg-primary hover:border-border-hover'
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">{a.icon}</span>
-                <span className="text-[11px] font-bold text-text-primary">{a.name}</span>
-              </div>
-              <div className="text-[9px] text-text-secondary leading-relaxed">{a.desc}</div>
-              <div className="flex flex-wrap gap-1 mt-2">
-                {a.mcpTools.map((t) => (
-                  <span key={t} className="text-[7px] font-mono px-1.5 py-0.5 rounded bg-bg-secondary border border-border text-text-muted">{t}</span>
-                ))}
-              </div>
-            </button>
-          ))}
-        </div>
+        <ScrollArea scrollbars="vertical" className="flex-1">
+          <Flex direction="column" gap="2" p="3">
+            {agentProfiles.map((a) => (
+              <Card
+                key={a.id}
+                size="1"
+                variant={selectedAgent === a.id ? 'classic' : 'surface'}
+                onClick={() => setSelectedAgent(a.id)}
+                style={{
+                  cursor: 'pointer',
+                  background: selectedAgent === a.id ? 'rgba(167,139,250,0.08)' : 'var(--color-bg-primary)',
+                  border: `1px solid ${selectedAgent === a.id ? 'rgba(167,139,250,0.3)' : 'var(--color-border)'}`,
+                }}
+              >
+                <Flex align="center" gap="2" mb="1">
+                  <Text size="4">{a.icon}</Text>
+                  <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{a.name}</Text>
+                </Flex>
+                <Text size="1" style={{ color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>{a.desc}</Text>
+                <Flex wrap="wrap" gap="1" mt="2">
+                  {a.mcpTools.map((t) => (
+                    <Badge key={t} size="1" variant="surface" color="gray" style={{ fontSize: 8 }}>{t}</Badge>
+                  ))}
+                </Flex>
+              </Card>
+            ))}
+          </Flex>
+        </ScrollArea>
+
+        <Separator size="4" style={{ background: 'var(--color-border)' }} />
 
         {/* MCP Status */}
-        <div className="p-3 border-t border-border">
-          <div className="text-[10px] font-bold text-text-muted mb-1.5 flex items-center gap-1">
-            <Wrench size={10} /> MCP Servers
-          </div>
-          <div className="grid grid-cols-2 gap-1">
+        <Box p="3">
+          <Flex align="center" gap="1" mb="2">
+            <Wrench size={10} style={{ color: 'var(--color-text-muted)' }} />
+            <Text size="1" weight="bold" style={{ color: 'var(--color-text-muted)' }}>MCP Servers</Text>
+          </Flex>
+          <div className="grid grid-cols-2 gap-1.5">
             {['Ontology', 'Prometheus', 'OpenSearch', 'Airflow', 'Spark', 'ArgoCD', 'Version'].map((mcp) => (
-              <div key={mcp} className="flex items-center gap-1.5 text-[8px] text-text-secondary">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent-green" />
-                {mcp}
-              </div>
+              <Flex key={mcp} align="center" gap="1">
+                <Box className="animate-pulse" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-accent-green)' }} />
+                <Text size="1" style={{ color: 'var(--color-text-secondary)', fontSize: 9 }}>{mcp}</Text>
+              </Flex>
             ))}
           </div>
-        </div>
-      </div>
+        </Box>
+      </Flex>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <Flex direction="column" className="flex-1">
         {/* Agent Header */}
-        <div className="px-4 py-3 border-b border-border bg-bg-secondary/50 flex items-center gap-3">
-          <span className="text-xl">{agent.icon}</span>
-          <div>
-            <div className="text-[13px] font-bold text-text-primary">{agent.name} Agent</div>
-            <div className="text-[10px] text-text-muted">{agent.desc}</div>
-          </div>
-          <div className="ml-auto flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
-            <span className="text-[9px] font-mono text-accent-green">Active</span>
-          </div>
-        </div>
+        <Flex align="center" gap="3" px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)', background: 'rgba(12,16,24,0.5)' }}>
+          <Text size="5">{agent.icon}</Text>
+          <Box className="flex-1">
+            <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)', display: 'block' }}>{agent.name} Agent</Text>
+            <Text size="1" style={{ color: 'var(--color-text-muted)' }}>{agent.desc}</Text>
+          </Box>
+          <Flex align="center" gap="1">
+            <Box className="animate-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-accent-green)' }} />
+            <Text size="1" className="font-mono" style={{ color: 'var(--color-accent-green)' }}>Active</Text>
+          </Flex>
+        </Flex>
 
-        {/* Chat */}
         <ChatPanel
           messages={sampleAgentChat}
           placeholder={`${agent.name} Agent에게 질문하세요...`}
         />
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 }

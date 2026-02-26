@@ -1,3 +1,4 @@
+import { Flex, Text, IconButton, Separator, Avatar, Badge } from '@radix-ui/themes';
 import { Bell, Search, ChevronRight } from 'lucide-react';
 import type { ViewId } from './Sidebar';
 
@@ -16,24 +17,40 @@ const viewTitles: Record<ViewId, { title: string; desc: string }> = {
 export function TopBar({ activeView }: TopBarProps) {
   const info = viewTitles[activeView];
   return (
-    <div className="h-12 shrink-0 bg-bg-secondary/80 backdrop-blur-sm border-b border-border flex items-center px-5 gap-4">
-      <div className="flex items-center gap-2 flex-1">
-        <span className="text-[13px] font-bold text-text-primary">{info.title}</span>
-        <ChevronRight size={12} className="text-text-muted" />
-        <span className="text-[11px] text-text-secondary">{info.desc}</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <button className="p-1.5 rounded-md hover:bg-bg-hover transition-colors text-text-muted hover:text-text-primary">
-          <Search size={15} />
-        </button>
-        <button className="relative p-1.5 rounded-md hover:bg-bg-hover transition-colors text-text-muted hover:text-text-primary">
-          <Bell size={15} />
-          <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-accent-red rounded-full text-[8px] font-bold text-white flex items-center justify-center">3</span>
-        </button>
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-accent-purple to-accent-pink flex items-center justify-center text-[10px] font-bold text-white">
-          SH
+    <Flex
+      align="center"
+      px="5"
+      gap="4"
+      className="h-12 shrink-0"
+      style={{ background: 'rgba(12,16,24,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--color-border)' }}
+    >
+      <Flex align="center" gap="2" className="flex-1">
+        <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>{info.title}</Text>
+        <ChevronRight size={12} style={{ color: 'var(--color-text-muted)' }} />
+        <Text size="1" style={{ color: 'var(--color-text-secondary)' }}>{info.desc}</Text>
+      </Flex>
+
+      <Flex align="center" gap="2">
+        <IconButton size="1" variant="ghost" color="gray" radius="medium">
+          <Search size={14} />
+        </IconButton>
+        <div style={{ position: 'relative' }}>
+          <IconButton size="1" variant="ghost" color="gray" radius="medium">
+            <Bell size={14} />
+          </IconButton>
+          <Badge
+            size="1"
+            color="red"
+            variant="solid"
+            radius="full"
+            style={{ position: 'absolute', top: -2, right: -2, fontSize: 8, minWidth: 14, height: 14, padding: '0 3px' }}
+          >
+            3
+          </Badge>
         </div>
-      </div>
-    </div>
+        <Separator orientation="vertical" size="1" mx="1" style={{ background: 'var(--color-border)' }} />
+        <Avatar size="1" fallback="SH" radius="full" color="violet" />
+      </Flex>
+    </Flex>
   );
 }

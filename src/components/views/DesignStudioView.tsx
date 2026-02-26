@@ -9,7 +9,8 @@ import {
   useEdgesState,
   type Node,
 } from '@xyflow/react';
-import { Info, CheckCircle, AlertTriangle, Layers } from 'lucide-react';
+import { Flex, Box, Text, Card, Heading, Separator, IconButton } from '@radix-ui/themes';
+import { CheckCircle, AlertTriangle, Layers, X } from 'lucide-react';
 import { topologyNodes, topologyEdges, layerLabels, type TopoNodeData } from '../../data/topology';
 import { sampleDesignChat } from '../../data/agents';
 import { ChatPanel } from '../shared/ChatPanel';
@@ -35,33 +36,32 @@ export function DesignStudioView() {
   ], []);
 
   return (
-    <div className="flex h-full">
+    <Flex className="h-full">
       {/* Chat Panel */}
-      <div className="w-[340px] shrink-0 border-r border-border flex flex-col bg-bg-secondary">
-        <div className="px-4 py-3 border-b border-border">
-          <div className="text-[13px] font-bold text-text-primary flex items-center gap-2">
-            💬 설계 대화
-          </div>
-          <div className="text-[10px] text-text-muted mt-0.5">자연어로 아키텍처를 설계하세요</div>
-        </div>
+      <Flex direction="column" className="w-[340px] shrink-0" style={{ background: 'var(--color-bg-secondary)', borderRight: '1px solid var(--color-border)' }}>
+        <Box px="4" py="3" style={{ borderBottom: '1px solid var(--color-border)' }}>
+          <Heading size="2" style={{ color: 'var(--color-text-primary)' }}>💬 설계 대화</Heading>
+          <Text size="1" style={{ color: 'var(--color-text-muted)' }}>자연어로 아키텍처를 설계하세요</Text>
+        </Box>
         <ChatPanel
           messages={sampleDesignChat}
           placeholder="아키텍처 요구사항을 입력하세요..."
         />
-      </div>
+      </Flex>
 
       {/* Topology Canvas */}
-      <div className="flex-1 relative">
-        {/* Layer labels */}
+      <Box className="flex-1 relative">
         {layerLabels.map((l) => (
-          <div
+          <Box
             key={l.label}
-            className="absolute left-3 z-10 flex items-center gap-1.5 text-[9px] font-mono text-text-muted pointer-events-none"
+            className="absolute left-3 z-10 pointer-events-none"
             style={{ top: l.y + 78 }}
           >
-            <Layers size={10} />
-            {l.label}
-          </div>
+            <Flex align="center" gap="1">
+              <Layers size={10} style={{ color: 'var(--color-text-muted)' }} />
+              <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)', fontSize: 9 }}>{l.label}</Text>
+            </Flex>
+          </Box>
         ))}
         <ReactFlow
           nodes={nodes}
@@ -89,69 +89,69 @@ export function DesignStudioView() {
         </ReactFlow>
 
         {/* Validation Panel */}
-        <div className="absolute top-3 right-3 w-[260px] bg-bg-secondary/95 backdrop-blur-sm border border-border rounded-xl p-3 z-10">
-          <div className="text-[11px] font-bold text-text-primary flex items-center gap-1.5 mb-2">
-            <CheckCircle size={12} className="text-accent-green" />
-            Validation
-          </div>
-          <div className="space-y-1.5">
+        <Card size="1" variant="surface" className="absolute top-3 right-3 w-[270px] z-10" style={{ background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+          <Flex align="center" gap="2" mb="2">
+            <CheckCircle size={13} style={{ color: 'var(--color-accent-green)' }} />
+            <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Validation</Text>
+          </Flex>
+          <Flex direction="column" gap="2">
             {validations.map((v, i) => (
-              <div key={i} className="flex items-start gap-2 text-[10px]">
+              <Flex key={i} align="start" gap="2">
                 {v.type === 'pass'
-                  ? <CheckCircle size={10} className="text-accent-green mt-0.5 shrink-0" />
-                  : <AlertTriangle size={10} className="text-accent-gold mt-0.5 shrink-0" />
+                  ? <CheckCircle size={11} style={{ color: 'var(--color-accent-green)', marginTop: 2, flexShrink: 0 }} />
+                  : <AlertTriangle size={11} style={{ color: 'var(--color-accent-gold)', marginTop: 2, flexShrink: 0 }} />
                 }
-                <span className={v.type === 'pass' ? 'text-text-secondary' : 'text-accent-gold'}>
+                <Text size="1" style={{ color: v.type === 'pass' ? 'var(--color-text-secondary)' : 'var(--color-accent-gold)', lineHeight: 1.5 }}>
                   {v.msg}
-                </span>
-              </div>
+                </Text>
+              </Flex>
             ))}
-          </div>
-        </div>
+          </Flex>
+        </Card>
 
         {/* Component Inspector */}
         {selected && (
-          <div className="absolute bottom-16 right-3 w-[260px] bg-bg-secondary/95 backdrop-blur-sm border border-border rounded-xl p-3 z-10 anim-fade">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-[11px] font-bold text-text-primary flex items-center gap-1.5">
-                <Info size={12} className="text-accent-blue" />
-                Component Inspector
-              </div>
-              <button onClick={() => setSelected(null)} className="text-text-muted hover:text-text-primary text-xs">✕</button>
+          <Card size="2" variant="surface" className="absolute bottom-16 right-3 w-[270px] z-10 anim-fade" style={{ background: 'rgba(12,16,24,0.95)', backdropFilter: 'blur(12px)', border: '1px solid var(--color-border)' }}>
+            <Flex align="center" justify="between" mb="2">
+              <Flex align="center" gap="2">
+                <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)' }}>Component Inspector</Text>
+              </Flex>
+              <IconButton size="1" variant="ghost" color="gray" onClick={() => setSelected(null)}>
+                <X size={12} />
+              </IconButton>
+            </Flex>
+            <Separator size="4" mb="3" style={{ background: 'var(--color-border)' }} />
+            <Flex align="center" gap="3" mb="3">
+              <Text size="5">{selected.icon}</Text>
+              <Box>
+                <Text size="2" weight="bold" style={{ color: 'var(--color-text-primary)', display: 'block' }}>{selected.label}</Text>
+                <Text size="1" className="font-mono" style={{ color: 'var(--color-text-muted)' }}>v{selected.version} · {selected.category}</Text>
+              </Box>
+            </Flex>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              {selected.cpu && (
+                <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                  <Text size="1" style={{ color: 'var(--color-text-muted)', display: 'block', fontSize: 9 }}>CPU</Text>
+                  <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{selected.cpu}</Text>
+                </Card>
+              )}
+              {selected.memory && (
+                <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                  <Text size="1" style={{ color: 'var(--color-text-muted)', display: 'block', fontSize: 9 }}>Memory</Text>
+                  <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{selected.memory}</Text>
+                </Card>
+              )}
+              {selected.replicas && (
+                <Card size="1" variant="surface" style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)' }}>
+                  <Text size="1" style={{ color: 'var(--color-text-muted)', display: 'block', fontSize: 9 }}>Replicas</Text>
+                  <Text size="1" weight="bold" className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{selected.replicas}</Text>
+                </Card>
+              )}
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{selected.icon}</span>
-                <div>
-                  <div className="text-[12px] font-bold text-text-primary">{selected.label}</div>
-                  <div className="text-[9px] font-mono text-text-muted">v{selected.version} · {selected.category}</div>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-1.5 text-center">
-                {selected.cpu && (
-                  <div className="bg-bg-primary rounded-lg p-1.5 border border-border">
-                    <div className="text-[9px] text-text-muted">CPU</div>
-                    <div className="text-[10px] font-mono font-bold text-text-primary">{selected.cpu}</div>
-                  </div>
-                )}
-                {selected.memory && (
-                  <div className="bg-bg-primary rounded-lg p-1.5 border border-border">
-                    <div className="text-[9px] text-text-muted">Memory</div>
-                    <div className="text-[10px] font-mono font-bold text-text-primary">{selected.memory}</div>
-                  </div>
-                )}
-                {selected.replicas && (
-                  <div className="bg-bg-primary rounded-lg p-1.5 border border-border">
-                    <div className="text-[9px] text-text-muted">Replicas</div>
-                    <div className="text-[10px] font-mono font-bold text-text-primary">{selected.replicas}</div>
-                  </div>
-                )}
-              </div>
-              <div className="text-[9px] text-text-muted">Layer: {selected.layer}</div>
-            </div>
-          </div>
+            <Text size="1" style={{ color: 'var(--color-text-muted)', marginTop: 8, display: 'block' }}>Layer: {selected.layer}</Text>
+          </Card>
         )}
-      </div>
-    </div>
+      </Box>
+    </Flex>
   );
 }
