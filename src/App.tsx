@@ -1,26 +1,27 @@
-import { Hero } from './components/Hero';
-import { LoopBar } from './components/LoopBar';
-import { Phase0Ontology } from './components/sections/Phase0Ontology';
-import { Phase1Design } from './components/sections/Phase1Design';
-import { Phase2Provisioning } from './components/sections/Phase2Provisioning';
-import { Phase3Ops } from './components/sections/Phase3Ops';
-import { Phase4Agent } from './components/sections/Phase4Agent';
-import { Phase5Deployment } from './components/sections/Phase5Deployment';
+import { useState } from 'react';
+import { Sidebar, type ViewId } from './components/layout/Sidebar';
+import { TopBar } from './components/layout/TopBar';
+import { DesignStudioView } from './components/views/DesignStudioView';
+import { OntologyView } from './components/views/OntologyView';
+import { ProvisioningView } from './components/views/ProvisioningView';
+import { OperationsView } from './components/views/OperationsView';
+import { AgentView } from './components/views/AgentView';
 
 function App() {
+  const [activeView, setActiveView] = useState<ViewId>('design');
+
   return (
     <>
-      <Hero />
-      <div className="wrap">
-        <LoopBar />
-      </div>
-      <div className="wrap">
-        <Phase0Ontology />
-        <Phase1Design />
-        <Phase2Provisioning />
-        <Phase3Ops />
-        <Phase4Agent />
-        <Phase5Deployment />
+      <TopBar activeView={activeView} />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar active={activeView} onChange={setActiveView} />
+        <div className="flex-1 overflow-hidden">
+          {activeView === 'design' && <DesignStudioView />}
+          {activeView === 'ontology' && <OntologyView />}
+          {activeView === 'provision' && <ProvisioningView />}
+          {activeView === 'ops' && <OperationsView />}
+          {activeView === 'agent' && <AgentView />}
+        </div>
       </div>
     </>
   );
